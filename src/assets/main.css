@@ -1,0 +1,236 @@
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@100;200;300;400;500;600;700;800;900&display=swap');
+
+@import 'tailwindcss';
+
+@theme {
+  --font-sans: 'Poppins', sans-serif;
+  --font-mono: 'Fira Mono', monospace;
+
+  --color-text-title: rgba(255, 255, 255, 0.85);
+  --color-text-body: rgba(255, 255, 255, 0.3);
+  --color-text-muted: rgba(255, 255, 255, 0.25);
+  --color-text-subtle: rgba(255, 255, 255, 0.35);
+  --color-text-accent: rgba(165, 180, 252, 0.85);
+  --color-text-danger: #f87171;
+  --color-text-white: #ffffff;
+  --color-bg-page: #0d0d0d;
+  --color-bg-card: #141414;
+  --color-bg-card-hover: #1a1a1a;
+  --color-bg-subtle: rgba(255, 255, 255, 0.05);
+  --color-bg-accent: rgba(99, 102, 241, 0.15);
+  --color-bg-accent-hover: rgba(99, 102, 241, 0.22);
+  --color-bg-danger-hover: rgba(239, 68, 68, 0.1);
+
+  --color-border-default: rgba(255, 255, 255, 0.07);
+  --color-border-hover: rgba(255, 255, 255, 0.11);
+  --color-border-divider: rgba(255, 255, 255, 0.06);
+  --color-border-accent: rgba(129, 140, 248, 0.2);
+
+  --animate-float: float 4s ease-in-out infinite;
+
+  --color-bg-nav-active: rgba(255, 255, 255, 0.06);
+  --color-bg-nav-hover: rgba(255, 255, 255, 0.132);
+  --color-text-nav-active: rgba(255, 255, 255, 0.8);
+  --color-text-nav-inactive: rgba(255, 255, 255, 0.5);
+
+  --color-bg-avatar-favorite: rgba(245, 158, 11, 0.15);
+  --color-border-avatar-favorite: rgba(251, 191, 36, 0.2);
+  --color-text-avatar-favorite: rgba(252, 211, 77, 0.9);
+
+  --color-bg-user-panel: rgba(255, 255, 255, 0.03);
+  --color-border-user-panel: rgba(255, 255, 255, 0.05);
+  --color-text-username: rgba(255, 255, 255, 0.7);
+
+  --color-text-board-item: rgba(255, 255, 255, 0.5);
+  --color-text-favorite-icon: rgba(248, 113, 113, 0.4);
+
+  /* Modal */
+  --color-bg-modal: #111111;
+  --color-border-modal: rgba(255, 255, 255, 0.1);
+
+  /* Input */
+  --color-bg-input: rgba(255, 255, 255, 0.05);
+  --color-border-input-focus: rgba(99, 102, 241, 0.5);
+
+  /* Primary button */
+  --color-bg-btn-primary: #6366f1;
+  --color-bg-btn-primary-hover: #818cf8;
+  --color-bg-btn-edit: rgba(59, 130, 246, 0.2);
+  --color-bg-btn-edit-hover: rgba(59, 130, 246, 0.3);
+  --color-text-btn-edit: #93c5fd;
+}
+/* LIGHT TEMA */
+[data-theme='light'] {
+  --color-text-title: rgba(0, 0, 0, 0.85);
+  --color-text-body: rgba(0, 0, 0, 0.45);
+  --color-text-muted: rgba(0, 0, 0, 0.35);
+  --color-text-subtle: rgba(0, 0, 0, 0.45);
+  --color-text-accent: #4f46e5;
+  --color-text-danger: #dc2626;
+  --color-text-white: #000000;
+
+  --color-bg-card: #ffffff;
+  --color-bg-card-hover: #f5f5f5;
+  --color-bg-subtle: rgba(0, 0, 0, 0.04);
+  --color-bg-accent: rgba(99, 102, 241, 0.1);
+  --color-bg-accent-hover: rgba(99, 102, 241, 0.18);
+  --color-bg-danger-hover: rgba(220, 38, 38, 0.08);
+
+  --color-border-default: rgba(0, 0, 0, 0.08);
+  --color-border-hover: rgba(0, 0, 0, 0.14);
+  --color-border-divider: rgba(0, 0, 0, 0.07);
+  --color-border-accent: rgba(99, 102, 241, 0.25);
+
+  --color-bg-nav-active: rgba(0, 0, 0, 0.07);
+  --color-bg-nav-hover: rgba(0, 0, 0, 0.04);
+  --color-text-nav-active: rgba(0, 0, 0, 0.8);
+  --color-text-nav-inactive: rgba(0, 0, 0, 0.45);
+
+  --color-bg-avatar-favorite: rgba(245, 158, 11, 0.12);
+  --color-border-avatar-favorite: rgba(217, 119, 6, 0.25);
+  --color-text-avatar-favorite: #b45309;
+
+  --color-bg-user-panel: rgba(0, 0, 0, 0.03);
+  --color-border-user-panel: rgba(0, 0, 0, 0.07);
+  --color-text-username: rgba(0, 0, 0, 0.7);
+
+  --color-text-board-item: rgba(0, 0, 0, 0.55);
+  --color-text-favorite-icon: rgba(220, 38, 38, 0.45);
+
+  --color-bg-modal: #ffffff;
+  --color-border-modal: rgba(0, 0, 0, 0.1);
+
+  --color-bg-input: rgba(0, 0, 0, 0.04);
+  --color-border-input-focus: rgba(99, 102, 241, 0.5);
+
+  --color-bg-btn-primary: #6366f1;
+  --color-bg-btn-primary-hover: #4f46e5;
+
+  --color-bg-page: #f0f0f0;
+}
+
+@layer base {
+  body {
+    min-height: 100vh;
+    font-family: 'Poppins', sans-serif;
+
+    line-height: 1.6;
+
+    font-size: 15px;
+    text-rendering: optimizeLegibility;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+  @layer base {
+    button:not(:disabled) {
+      cursor: pointer;
+    }
+
+    button:disabled {
+      cursor: not-allowed;
+    }
+  }
+}
+
+@layer components {
+  .modal-overlay {
+    @apply fixed inset-0 z-50 bg-black/60 flex items-end md:items-center justify-center;
+  }
+
+  .modal-container {
+    @apply w-full md:w-[420px]
+           bg-bg-modal border border-border-modal
+           rounded-t-2xl md:rounded-xl
+           p-5 md:p-6
+           shadow-xl;
+  }
+
+  .modal-title {
+    @apply text-text-title text-base md:text-lg font-semibold mb-4;
+  }
+  .modal-label {
+    @apply text-text-title text-base md:text-[14px] font-semibold mb-4;
+  }
+
+  .modal-input {
+    @apply w-full mb-3 px-3 py-2 rounded-lg
+           bg-bg-input border border-border-default
+           text-text-title placeholder:text-text-muted
+           outline-none focus:border-border-accent;
+  }
+
+  .modal-textarea {
+    @apply w-full mb-5 px-3 py-2 rounded-lg
+           bg-bg-input border border-border-default
+           text-text-title placeholder:text-text-muted
+           outline-none focus:border-border-accent resize-none;
+  }
+
+  .modal-actions {
+    @apply flex justify-end gap-2;
+  }
+
+  .modal-cancel {
+    @apply px-3 py-2 rounded-lg text-text-muted hover:text-text-title transition;
+  }
+
+  .modal-primary {
+    @apply px-4 py-2 rounded-lg
+           bg-bg-btn-primary hover:bg-bg-btn-primary-hover
+           text-white font-medium transition;
+  }
+  .modal-header {
+    @apply mb-4;
+  }
+
+  .modal-subtitle {
+    @apply text-text-body text-lg mt-1;
+  }
+  .app-input {
+    @apply w-full h-10 px-3 rounded-lg
+         bg-bg-input border border-border-default
+         text-text-title placeholder:text-text-muted
+         outline-none transition
+         focus:border-border-accent;
+  }
+}
+
+@layer utilities {
+  .scrollbar-custom::-webkit-scrollbar {
+    width: 6px;
+  }
+
+  .scrollbar-custom::-webkit-scrollbar-track {
+    background: transparent;
+  }
+
+  .scrollbar-custom::-webkit-scrollbar-thumb {
+    background: rgba(255, 255, 255, 0.12);
+    border-radius: 999px;
+    transition: background 0.2s ease;
+  }
+
+  .scrollbar-custom::-webkit-scrollbar-thumb:hover {
+    background: rgba(255, 255, 255, 0.18); /* sivo, ne belo */
+  }
+}
+
+:root {
+}
+@keyframes float {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-6px);
+  }
+}
+
+#app {
+  max-width: 100%;
+  height: 100vh;
+  margin: 0 auto;
+
+  font-weight: normal;
+}
