@@ -4,34 +4,74 @@ import CommentsComp from './CommentsComp.vue'
 import { useCommentsStore } from '../stores/commentsStore'
 import { useRoute } from 'vue-router'
 import { useSessionStore } from '@/stores/usersSessionStore.ts'
+import { useMessageStore } from '@/stores/messageStore'
+import BaseButton from '@/components/ui/BaseButton.vue'
+import { useConfirmStore } from '@/stores/confirmStore.ts'
+import { useAsyncAction } from '@/services/functions/useAsyncAction.ts'
 
 const session = useSessionStore()
 const store = useCommentsStore()
+
+const { loading: isCommentLoading, run } = useAsyncAction()
+const confirmStore = useConfirmStore()
 
 const route = useRoute()
 
 const taskId = Number(route.params.id)
 
+const messageStore = useMessageStore()
+
 const newComment = ref('')
 
 async function handlePost() {
   if (!newComment.value.trim() || !session.sid) return
-  const payload: import('../data/commentTypes.ts').CommentPayload = {
-    tsk_id: taskId,
-    com_text: newComment.value.trim(),
+
+  try {
+    isCommentLoading.value = true
+
+    const payload = {
+      tsk_id: taskId,
+      com_text: newComment.value.trim(),
+    }
+
+    await store.postComment(payload, session.sid)
+
+    newComment.value = ''
+
+    await store.fetchComments(taskId, session.sid)
+
+    messageStore.success('Comment added successfully')
+  } catch (err) {
+    console.log(err)
+
+    messageStore.fail('Failed to add comment')
+  } finally {
+    isCommentLoading.value = false
   }
-
-  await store.postComment(payload, session.sid)
-  newComment.value = ''
-  store.fetchComments(taskId, session.sid)
-}
-function handleDelete(id: number) {
-  store.eraseComment(id, session.sid!)
-  alert('komentar obrisan')
-
-  store.fetchComments(taskId, session.sid!)
 }
 
+async function handleDelete(id: number) {
+  const confirmed = await confirmStore.ask({
+    title: 'Delete comment',
+    message: 'Are you sure you want to delete this comment?',
+    confirmText: 'Delete',
+    cancelText: 'Cancel',
+    variant: 'danger',
+  })
+
+  if (!confirmed) return
+
+  await run(
+    async () => {
+      await store.eraseComment(id, session.sid!)
+      await store.fetchComments(taskId, session.sid!)
+    },
+    {
+      success: 'Comment deleted successfully',
+      error: 'Failed to delete comment',
+    },
+  )
+}
 const currentPage = ref(1)
 const commentsPerPage = 7
 
@@ -62,17 +102,17 @@ watch(
 </script>
 
 <template>
-  <div class="bg-white/[0.03] border border-white/[0.06] rounded-2xl p-5">
+  <div class="bg-bg-card border border-border-default rounded-2xl p-5">
     <!-- Header + Search -->
     <div class="flex items-center justify-between gap-3 mb-4 flex-wrap">
-      <p class="text-white/30 text-[11px] uppercase tracking-widest font-medium">
-        Komentari · {{ store.commentsList.length }}
+      <p class="text-text-muted text-[11px] uppercase tracking-widest font-medium">
+        Comments · {{ store.commentsList.length }}
       </p>
 
       <!-- Search -->
       <div class="relative">
         <svg
-          class="absolute left-2.5 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-white/25 pointer-events-none"
+          class="absolute left-2.5 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-text-muted pointer-events-none"
           fill="none"
           viewBox="0 0 24 24"
           stroke="currentColor"
@@ -81,11 +121,12 @@ watch(
           <circle cx="11" cy="11" r="8" />
           <path d="m21 21-4.35-4.35" />
         </svg>
+
         <input
           v-model="store.searchText"
           type="text"
-          placeholder="Pretraži komentare..."
-          class="bg-white/[0.05] border border-white/[0.08] rounded-xl pl-8 pr-3 py-1.5 text-sm text-white/70 placeholder:text-white/20 w-52 focus:outline-none focus:border-white/20 transition-colors"
+          placeholder="Search comments..."
+          class="app-input pl-8 w-52 h-auto py-1.5 text-sm"
         />
       </div>
     </div>
@@ -93,18 +134,19 @@ watch(
     <!-- Lista -->
     <CommentsComp v-for="c in paginatedComments" :key="c.id" :comment="c" @delete="handleDelete" />
 
-    <p v-if="!store.commentsList.length" class="text-white/30 text-sm py-3">Nema komentara.</p>
-    <p v-else-if="!store.filteredComments.length" class="text-white/30 text-sm py-3">
-      Nema rezultata za "{{ store.searchText }}".
+    <p v-if="!store.commentsList.length" class="text-text-muted text-sm py-3">No comments.</p>
+
+    <p v-else-if="!store.filteredComments.length" class="text-text-muted text-sm py-3">
+      No results for"{{ store.searchText }}".
     </p>
 
     <!-- Pagination -->
     <div
       v-if="totalPages > 1"
-      class="flex items-center justify-end gap-2 pt-3 border-t border-white/[0.05] mt-3"
+      class="flex items-center justify-end gap-2 pt-3 border-t border-border-divider mt-3"
     >
       <button
-        class="w-7 h-7 flex items-center justify-center rounded-lg border border-white/[0.08] text-white/40 hover:text-white/70 hover:border-white/20 transition-colors disabled:opacity-25 disabled:cursor-not-allowed"
+        class="w-7 h-7 flex items-center justify-center rounded-lg border border-border-default text-text-subtle hover:text-text-title hover:border-border-hover transition-colors disabled:opacity-25 disabled:cursor-not-allowed"
         :disabled="currentPage === 1"
         @click="currentPage--"
       >
@@ -119,10 +161,12 @@ watch(
         </svg>
       </button>
 
-      <span class="text-red-400 text-xs tabular-nums"> {{ currentPage }} / {{ totalPages }} </span>
+      <span class="text-text-accent text-xs tabular-nums">
+        {{ currentPage }} / {{ totalPages }}
+      </span>
 
       <button
-        class="w-7 h-7 flex items-center justify-center rounded-lg border border-white/[0.08] text-white/40 hover:text-white/70 hover:border-white/20 transition-colors disabled:opacity-25 disabled:cursor-not-allowed"
+        class="w-7 h-7 flex items-center justify-center rounded-lg border border-border-default text-text-subtle hover:text-text-title hover:border-border-hover transition-colors disabled:opacity-25 disabled:cursor-not-allowed"
         :disabled="currentPage === totalPages"
         @click="currentPage++"
       >
@@ -139,21 +183,23 @@ watch(
     </div>
 
     <!-- Add comment -->
-    <div class="flex gap-2 items-end pt-4 border-t border-white/[0.05] mt-2">
+    <div class="flex gap-2 items-end pt-4 border-t border-border-divider mt-2">
       <textarea
         v-model="newComment"
         rows="1"
-        placeholder="Napiši komentar..."
-        class="flex-1 bg-white/[0.05] border border-white/[0.08] rounded-xl px-3 py-2 text-sm text-white/70 placeholder:text-white/20 resize-none focus:outline-none focus:border-white/20"
+        placeholder="Write comment..."
+        class="flex-1 px-3 py-2 rounded-xl bg-bg-input border border-border-default text-text-title placeholder:text-text-muted resize-none outline-none transition focus:border-border-accent"
         @keydown.enter.exact.prevent="handlePost"
       />
-      <button
-        class="flex items-center gap-1.5 px-4 py-2 bg-blue-500/20 hover:bg-blue-500/30 text-blue-400 text-sm font-medium rounded-xl transition-colors disabled:opacity-40 disabled:cursor-not-allowed"
+
+      <BaseButton
+        variant="primary"
+        :loading="isCommentLoading"
         :disabled="!newComment.trim()"
         @click="handlePost"
       >
-        Pošalji
-      </button>
+        Send
+      </BaseButton>
     </div>
   </div>
 </template>

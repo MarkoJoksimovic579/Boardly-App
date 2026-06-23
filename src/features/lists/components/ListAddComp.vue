@@ -2,9 +2,15 @@
 import { onMounted, ref } from 'vue'
 import type { ListPayload } from '../data/listsTypes'
 
+import BaseButton from '@/components/ui/BaseButton.vue'
+
 const emit = defineEmits<{
   (e: 'add', list: ListPayload): void
   (e: 'cancel'): void
+}>()
+
+const props = defineProps<{
+  loading?: boolean
 }>()
 
 const inputForm = ref<ListPayload>({
@@ -56,13 +62,14 @@ function handleSubmit() {
       <div class="modal-actions">
         <button @click="emit('cancel')" class="modal-cancel">Cancel</button>
 
-        <button
-          @click="handleSubmit"
+        <BaseButton
+          variant="primary"
+          :loading="props.loading"
           :disabled="!inputForm.title?.trim()"
-          class="modal-primary disabled:opacity-40 disabled:cursor-not-allowed"
+          @click="handleSubmit"
         >
-          Add
-        </button>
+          Create list
+        </BaseButton>
       </div>
     </div>
   </div>

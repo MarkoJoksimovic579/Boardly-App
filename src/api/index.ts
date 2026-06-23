@@ -23,7 +23,7 @@ export default {
   registerUser: (payload: RegisterPayload) => axios.post('/auth/register', payload),
 
   //boards
-  getBoards: (sid: string) => axios.get('boards', { params: { sid } }),
+  getBoards: () => axios.get('boards'),
   addBoards: (payload: BoardPayload, sid: string) =>
     axios.post('boardsById', payload, { params: { sid } }),
   editBoards: (payload: BoardPayload, sid: string) =>
@@ -69,7 +69,8 @@ export default {
       },
     ),
 
-  //coments
+  //comentsimport axios from 'axios'
+
   getComments: (tsk_id: number, sid: string) => axios.get('comments', { params: { tsk_id, sid } }),
   addComments: (payload: CommentPayload, sid: string) =>
     axios.post('comments', payload, { params: { sid } }),
@@ -102,7 +103,27 @@ export default {
     axios.post('members', { members, brd_id }, { params: { sid } }),
   deleteMembers: (brd_id: number, member_id: number, sid: string) =>
     axios.delete('members', { params: { brd_id, member_id, sid } }),
+  putMembersRoles: (brd_id: number, usr_id: number, role: 'admin' | 'member') =>
+    axios.put(
+      'members',
+      {},
+      {
+        params: {
+          brd_id,
+          usr_id,
+          role,
+        },
+      },
+    ),
 
   //roles
   getRoles: (sid: string) => axios.get('roles', { params: { sid } }),
+
+  //notifications
+  getNotifications: () =>
+    axios.get('notifications', {
+      params: {},
+    }),
+  putNotificationsRead: () => axios.put('notifications'),
+  deleteNotifications: () => axios.delete('notifications'),
 }

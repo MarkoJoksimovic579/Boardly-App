@@ -43,8 +43,7 @@ import { RouterView } from 'vue-router'
 
         <RouterLink
           to="/register"
-          class="h-9 px-4 rounded-xl text-sm font-medium text-white no-underline flex items-center transition-all hover:opacity-90"
-          style="background: linear-gradient(135deg, #6366f1, #8b5cf6)"
+          class="btn-primary *:h-9 px-4 rounded-xl text-sm font-medium text-white no-underline flex items-center transition-all hover:opacity-90"
         >
           Get started
         </RouterLink>

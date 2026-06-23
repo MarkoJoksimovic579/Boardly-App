@@ -1,0 +1,64 @@
+[data-theme='obsidian'] {
+  /* Text - povećan kontrast */
+  --color-text-title: #ecfdf5;
+  --color-text-body: #a7f3d0;
+  --color-text-muted: #6ee7b7;
+  --color-text-subtle: #86efca;
+  --color-text-accent: #34d399;
+  --color-text-danger: #fca5a5;
+  --color-text-white: #ffffff;
+
+  /* Backgrounds - malo svjetliji da elementi "iskaču" */
+  --color-bg-page: #020d08;
+  --color-bg-card: #0a1f16;
+  --color-bg-card-hover: #112b1e;
+  --color-bg-subtle: rgba(52, 211, 153, 0.06);
+  --color-bg-accent: rgba(52, 211, 153, 0.15);
+  --color-bg-accent-hover: rgba(52, 211, 153, 0.25);
+  --color-bg-danger-hover: rgba(239, 68, 68, 0.15);
+
+  /* Borders - vidljiviji */
+  --color-border-default: rgba(52, 211, 153, 0.18);
+  --color-border-hover: rgba(52, 211, 153, 0.32);
+  --color-border-divider: rgba(52, 211, 153, 0.1);
+  --color-border-accent: rgba(52, 211, 153, 0.4);
+
+  /* Modal */
+  --color-bg-modal: #081510;
+  --color-border-modal: rgba(52, 211, 153, 0.2);
+
+  /* Input */
+  --color-bg-input: rgba(52, 211, 153, 0.07);
+  --color-border-input-focus: rgba(52, 211, 153, 0.55);
+
+  /* Buttons - jasniji primarni */
+  --color-bg-btn-primary: #047857;
+  --color-bg-btn-primary-hover: #059669;
+  --color-bg-btn-edit: rgba(52, 211, 153, 0.18);
+  --color-bg-btn-edit-hover: rgba(52, 211, 153, 0.3);
+  --color-text-btn-edit: #a7f3d0;
+
+  /* Nav */
+  --color-bg-nav-active: rgba(52, 211, 153, 0.14);
+  --color-bg-nav-hover: rgba(52, 211, 153, 0.08);
+  --color-text-nav-active: #ecfdf5;
+  --color-text-nav-inactive: rgba(110, 231, 183, 0.65);
+
+  /* Avatar favorite */
+  --color-bg-avatar-favorite: rgba(245, 158, 11, 0.18);
+  --color-border-avatar-favorite: rgba(251, 191, 36, 0.35);
+  --color-text-avatar-favorite: #fde68a;
+
+  /* User panel */
+  --color-bg-user-panel: rgba(52, 211, 153, 0.06);
+  --color-border-user-panel: rgba(52, 211, 153, 0.14);
+  --color-text-username: #ecfdf5;
+
+  /* Misc */
+  --color-text-board-item: rgba(110, 231, 183, 0.8);
+  --color-text-favorite-icon: rgba(252, 165, 165, 0.7);
+
+  /* Gradient btn */
+  --color-bg-btn-gradient-from: #047857;
+  --color-bg-btn-gradient-to: #0d9488;
+}

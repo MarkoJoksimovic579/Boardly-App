@@ -1,18 +1,18 @@
 <script setup lang="ts">
 import dayjs from 'dayjs'
-import type { Board, BoardMember, BoardPayload } from '../data/boardsTypes'
+import type { Board, BoardPayload } from '../data/boardsTypes'
 
 const props = defineProps<{
   board: Board
 }>()
-const canEdit = props.board.can_edit
+
 const emit = defineEmits<{
   (e: 'edit', board: BoardPayload): void
   (e: 'delete', id: number): void
   (e: 'open', id: number): void
   (e: 'toggle-favorite', id: number): void
   (e: 'addMembers', id: number): void
-  (e: 'showMembers', members: BoardMember[]): void
+  (e: 'showMembers', board: Board): void
 }>()
 
 function onEdit() {
@@ -91,8 +91,7 @@ function formatDate(date: string) {
       <div class="flex items-center gap-1.5">
         <div class="flex -space-x-1.5"></div>
         <button
-          @click.stop="emit('showMembers', props.board.members)"
-          :disabled="!canEdit"
+          @click.stop="emit('showMembers', props.board)"
           class="cursor-pointer ml-1 w-6 h-6 rounded-full bg-bg-subtle border border-border-default disabled:hover:bg-bg-subtle disabled:hover:text-text-body flex items-center justify-center text-text-body hover:text-text-title hover:bg-bg-subtle/50 transition"
           title="Show members"
         >
@@ -112,7 +111,7 @@ function formatDate(date: string) {
             <path d="M16 3.13a4 4 0 0 1 0 7.75" />
           </svg>
         </button>
-        <span class="text-[11px] text-text-muted ml-1">{{ board.members_count }} members</span>
+        <span class="text-[11px] text-text-muted ml-1">{{ board.members_count - 1 }} members</span>
       </div>
 
       <!-- CREATOR -->

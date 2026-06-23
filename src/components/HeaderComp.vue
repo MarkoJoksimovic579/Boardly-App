@@ -1,8 +1,11 @@
 <script setup lang="ts">
-import { useBoardStore } from '@/features/boards/store/boardsStore'
+import { useBoardStore } from '@/features/boards/stores/boardsStore.ts'
+import { useNotificationsStore } from '@/features/notifications/stores/notificationsStore'
 import { useSessionStore } from '@/stores/usersSessionStore'
-import { computed, ref, watch } from 'vue'
+import { computed, onMounted, ref, watch } from 'vue'
 import { useRouter, useRoute } from 'vue-router'
+
+import NotificationsComp from './NotificationsComp.vue'
 
 const router = useRouter()
 const route = useRoute()
@@ -10,6 +13,8 @@ const route = useRoute()
 const session = useSessionStore()
 const boardStore = useBoardStore()
 const showMobileSearch = ref(false)
+const notificationsStore = useNotificationsStore()
+const showNotifications = ref(false)
 
 const userInitial = computed(() => {
   return session.user?.usr_username?.charAt(0)?.toUpperCase() || '?'
@@ -18,6 +23,14 @@ const userInitial = computed(() => {
 function onSearchInput() {
   if (route.path !== '/app/boards') {
     router.push('/app/boards')
+  }
+}
+
+function toggleNotifications() {
+  showNotifications.value = !showNotifications.value
+
+  if (showNotifications.value) {
+    notificationsStore.markAllAsRead()
   }
 }
 
@@ -30,6 +43,12 @@ watch(
     }
   },
 )
+
+onMounted(() => {
+  if (session.sid) {
+    notificationsStore.fetchNotifications()
+  }
+})
 </script>
 
 <template>
@@ -87,24 +106,40 @@ watch(
         </button>
 
         <!-- Notifications -->
-        <button
-          class="relative w-9 h-9 rounded-xl hover:bg-bg-nav-hover border border-transparent hover:border-border-default flex items-center justify-center text-text-subtle hover:text-text-board-item transition-all"
-        >
-          <svg
-            width="16"
-            height="16"
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="currentColor"
-            stroke-width="2"
-            stroke-linecap="round"
-            stroke-linejoin="round"
+        <div class="relative">
+          <button
+            @click="toggleNotifications"
+            class="relative w-9 h-9 rounded-xl hover:bg-bg-nav-hover border border-transparent hover:border-border-default flex items-center justify-center text-text-subtle hover:text-text-board-item transition-all"
           >
-            <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9" />
-            <path d="M13.73 21a2 2 0 0 1-3.46 0" />
-          </svg>
-          <span class="absolute top-2 right-2 w-1.5 h-1.5 rounded-full bg-bg-btn-primary"></span>
-        </button>
+            <svg
+              width="16"
+              height="16"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            >
+              <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9" />
+              <path d="M13.73 21a2 2 0 0 1-3.46 0" />
+            </svg>
+
+            <span
+              v-if="notificationsStore.unreadCount > 0"
+              class="absolute -top-1 -right-1 min-w-5 h-5 px-1 rounded-full bg-bg-btn-primary text-white text-[10px] flex items-center justify-center"
+            >
+              {{ notificationsStore.unreadCount }}
+            </span>
+          </button>
+          <NotificationsComp
+            v-if="showNotifications"
+            :notifications="notificationsStore.notifications"
+            @mark-read="notificationsStore.markAsRead"
+            @mark-all-read="notificationsStore.markAllAsRead"
+            @clear-all="notificationsStore.clearAll"
+          />
+        </div>
 
         <!-- Divider -->
         <div class="w-px h-5 bg-border-default"></div>
@@ -119,16 +154,6 @@ watch(
           >
             {{ userInitial }}
           </div>
-          <svg
-            class="hidden md:block w-3.5 h-3.5 text-text-muted group-hover:text-text-board-item transition-colors"
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="currentColor"
-            stroke-width="2.5"
-            stroke-linecap="round"
-          >
-            <path d="M6 9l6 6 6-6" />
-          </svg>
         </div>
       </div>
     </div>

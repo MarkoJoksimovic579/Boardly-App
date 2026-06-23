@@ -7,6 +7,10 @@ const emit = defineEmits<{
   (e: 'cancel'): void
 }>()
 
+const props = defineProps<{
+  loading?: boolean
+}>()
+
 const form = ref({
   title: '',
   description: '',
@@ -55,7 +59,10 @@ function save() {
       <div class="modal-actions">
         <button class="modal-cancel" @click="$emit('cancel')">Cancel</button>
 
-        <button class="modal-primary" @click="save">Save</button>
+        <button class="modal-primary" type="button" :disabled="props.loading" @click="save">
+          <span v-if="loading" class="spinner spinner-sm"></span>
+          <span>{{ loading ? 'Saving...' : 'Save' }}</span>
+        </button>
       </div>
     </div>
   </div>

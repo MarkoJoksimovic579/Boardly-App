@@ -3,6 +3,7 @@ import { ref, onMounted } from 'vue'
 import api from '@/api'
 import type { Role, User } from '../users/data/usersMockData'
 import { useSessionStore } from '@/stores/usersSessionStore'
+import BaseButton from '@/components/ui/BaseButton.vue'
 
 const session = useSessionStore()
 
@@ -16,6 +17,7 @@ const emit = defineEmits<{
 
 const props = defineProps<{
   user: User
+  loading?: boolean
 }>()
 
 // Local user copy
@@ -114,7 +116,7 @@ function save() {
       <!-- Actions -->
       <div class="modal-actions">
         <button @click="emit('cancel')" class="modal-cancel">Cancel</button>
-        <button @click="save" class="modal-primary">Save Changes</button>
+        <BaseButton variant="primary" :loading="props.loading" @click="save"> Save </BaseButton>
       </div>
     </div>
   </div>

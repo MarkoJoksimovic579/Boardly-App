@@ -36,15 +36,17 @@ const router = createRouter({
       component: AppLayout,
       meta: { requiresAuth: true },
       children: [
+        { path: '', redirect: '/app/boards' },
+
+        { path: 'boards', component: BoardsView },
         { path: 'boards/:id', component: BoardsCloseView },
         { path: 'dashboard', component: DashBoardView },
         { path: 'profile', component: ProfileView },
-
-        { path: 'boards', component: BoardsView },
         { path: 'favorites', component: BoardsFavoritesComp },
         { path: 'tasks/:id', component: TaskViewComp },
-        { path: 'admin/labels', component: LabelView },
-        { path: 'admin/users', component: UsersView },
+
+        { path: 'admin/labels', component: LabelView, meta: { requiresAdmin: true } },
+        { path: 'admin/users', component: UsersView, meta: { requiresAdmin: true } },
       ],
     },
   ],
@@ -61,6 +63,9 @@ router.beforeEach((to) => {
 
   // već ulogovan → ne daj login/register
   if (isLoggedIn && (to.path === '/login' || to.path === '/register')) {
+    return '/app/boards'
+  }
+  if (to.meta.requiresAdmin && !session.isAdmin && !session.isOwner) {
     return '/app/boards'
   }
 })

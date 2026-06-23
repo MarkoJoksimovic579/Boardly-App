@@ -1,0 +1,33 @@
+[data-theme='blue'] {
+  --color-text-title: #e0f2fe;
+  --color-text-body: #a5c8e6;
+  --color-text-muted: #7ea7cb;
+  --color-text-subtle: #9ec4e4;
+  --color-text-accent: #60a5fa;
+  --color-text-danger: #f87171;
+  --color-text-white: #ffffff;
+
+  --color-bg-page: #07111f;
+  --color-bg-card: #0f1c2f;
+  --color-bg-card-hover: #162742;
+  --color-bg-subtle: rgba(255, 255, 255, 0.05);
+
+  --color-bg-accent: rgba(96, 165, 250, 0.15);
+  --color-bg-accent-hover: rgba(96, 165, 250, 0.25);
+
+  --color-border-default: rgba(255, 255, 255, 0.08);
+  --color-border-hover: rgba(255, 255, 255, 0.15);
+  --color-border-divider: rgba(255, 255, 255, 0.06);
+  --color-border-accent: rgba(96, 165, 250, 0.25);
+
+  --color-bg-modal: #0b1728;
+  --color-border-modal: rgba(255, 255, 255, 0.08);
+
+  --color-bg-input: rgba(255, 255, 255, 0.05);
+
+  --color-bg-btn-primary: #2563eb;
+  --color-bg-btn-primary-hover: #3b82f6;
+
+  --color-bg-user-panel: rgba(255, 255, 255, 0.03);
+  --color-border-user-panel: rgba(255, 255, 255, 0.06);
+}

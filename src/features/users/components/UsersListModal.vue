@@ -47,13 +47,14 @@ onMounted(() => userStore.fetchUsers())
 
 <template>
   <div class="overflow-y-auto max-h-[70vh]">
-    <div class="flex min-h-[465px]">
+    <div class="flex min-h-[510px]">
       <table class="w-full h-full">
         <thead class="sticky top-0 bg-bg-card border-b border-border-divider">
           <tr class="text-left text-text-muted text-sm">
             <th class="hidden md:table-cell px-5 py-4 w-[30%]">Full Name</th>
             <th class="hidden md:table-cell px-5 py-4 w-[20%]">Username</th>
             <th class="hidden md:table-cell px-5 py-4 w-[35%]">Email</th>
+            <th class="px-5 py-3 text-left">Roles</th>
             <th class="hidden md:table-cell px-5 py-4 w-[15%] text-right">Actions</th>
             <th class="md:hidden px-4 py-4">Users</th>
           </tr>

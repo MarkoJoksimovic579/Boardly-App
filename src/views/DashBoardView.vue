@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { useBoardStore } from '@/features/boards/store/boardsStore'
+import { useBoardStore } from '@/features/boards/stores/boardsStore'
 import { useSessionStore } from '@/stores/usersSessionStore'
 import { computed, onMounted } from 'vue'
 import { useRouter } from 'vue-router'
@@ -22,25 +22,25 @@ onMounted(() => {
 </script>
 
 <template>
-  <div class="p-8 max-w-6xl">
+  <div class="p-4 sm:p-8 max-w-6xl">
     <!-- HEADER -->
-    <div class="mb-8">
-      <h1 class="text-2xl font-semibold text-white/80 tracking-tight">Dashboard</h1>
-      <p class="text-white/30 text-sm mt-1">
-        Welcome back, <span class="text-white/50">{{ session.user.usr_username }}</span>
+    <div class="mb-6 sm:mb-8">
+      <h1 class="text-xl sm:text-2xl font-semibold text-text-title tracking-tight">Dashboard</h1>
+      <p class="text-text-body text-sm mt-1">
+        Welcome back, <span class="text-text-subtle">{{ session.user.usr_username }}</span>
       </p>
     </div>
 
     <!-- STATS -->
-    <div class="grid grid-cols-2 lg:grid-cols-4 gap-3 mb-10">
-      <div class="bg-white/[0.03] border border-white/[0.06] rounded-xl p-4">
-        <div class="flex items-center gap-2 mb-3">
+    <div class="grid grid-cols-3 gap-2 sm:gap-3 mb-8 sm:mb-10">
+      <div class="bg-bg-subtle border border-border-default rounded-xl p-3 sm:p-4">
+        <div class="flex items-center gap-1.5 sm:gap-2 mb-2 sm:mb-3">
           <div
-            class="w-7 h-7 rounded-lg bg-indigo-500/10 border border-indigo-400/15 flex items-center justify-center"
+            class="w-6 h-6 sm:w-7 sm:h-7 rounded-lg bg-bg-accent border border-border-accent flex items-center justify-center shrink-0"
           >
             <svg
-              width="13"
-              height="13"
+              width="12"
+              height="12"
               viewBox="0 0 24 24"
               fill="none"
               stroke="#a5b4fc"
@@ -54,19 +54,19 @@ onMounted(() => {
               <rect x="14" y="14" width="7" height="7" rx="1" />
             </svg>
           </div>
-          <p class="text-white/30 text-xs">Total boards</p>
+          <p class="text-text-muted text-[10px] sm:text-xs leading-tight">Total boards</p>
         </div>
-        <p class="text-white/80 text-2xl font-semibold">{{ totalBoards }}</p>
+        <p class="text-text-title text-xl sm:text-2xl font-semibold">{{ totalBoards }}</p>
       </div>
 
-      <div class="bg-white/[0.03] border border-white/[0.06] rounded-xl p-4">
-        <div class="flex items-center gap-2 mb-3">
+      <div class="bg-bg-subtle border border-border-default rounded-xl p-3 sm:p-4">
+        <div class="flex items-center gap-1.5 sm:gap-2 mb-2 sm:mb-3">
           <div
-            class="w-7 h-7 rounded-lg bg-amber-500/10 border border-amber-400/15 flex items-center justify-center"
+            class="w-6 h-6 sm:w-7 sm:h-7 rounded-lg bg-bg-avatar-favorite border border-border-avatar-favorite flex items-center justify-center shrink-0"
           >
             <svg
-              width="13"
-              height="13"
+              width="12"
+              height="12"
               viewBox="0 0 24 24"
               fill="#fbbf24"
               stroke="#fbbf24"
@@ -77,19 +77,19 @@ onMounted(() => {
               />
             </svg>
           </div>
-          <p class="text-white/30 text-xs">Favorites</p>
+          <p class="text-text-muted text-[10px] sm:text-xs leading-tight">Favorites</p>
         </div>
-        <p class="text-white/80 text-2xl font-semibold">{{ favoriteBoards.length }}</p>
+        <p class="text-text-title text-xl sm:text-2xl font-semibold">{{ favoriteBoards.length }}</p>
       </div>
 
-      <div class="bg-white/[0.03] border border-white/[0.06] rounded-xl p-4">
-        <div class="flex items-center gap-2 mb-3">
+      <div class="bg-bg-subtle border border-border-default rounded-xl p-3 sm:p-4">
+        <div class="flex items-center gap-1.5 sm:gap-2 mb-2 sm:mb-3">
           <div
-            class="w-7 h-7 rounded-lg bg-emerald-500/10 border border-emerald-400/15 flex items-center justify-center"
+            class="w-6 h-6 sm:w-7 sm:h-7 rounded-lg bg-bg-accent border border-border-accent flex items-center justify-center shrink-0"
           >
             <svg
-              width="13"
-              height="13"
+              width="12"
+              height="12"
               viewBox="0 0 24 24"
               fill="none"
               stroke="#6ee7b7"
@@ -101,34 +101,37 @@ onMounted(() => {
               <path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z" />
             </svg>
           </div>
-          <p class="text-white/30 text-xs">You own</p>
+          <p class="text-text-muted text-[10px] sm:text-xs leading-tight">You own</p>
         </div>
-        <p class="text-white/80 text-2xl font-semibold">{{ ownedBoards.length }}</p>
+        <p class="text-text-title text-xl sm:text-2xl font-semibold">{{ ownedBoards.length }}</p>
       </div>
     </div>
 
-    <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+    <!-- BOARDS GRID -->
+    <div class="grid grid-cols-1 sm:grid-cols-2 gap-6 sm:gap-8">
       <!-- FAVORITES -->
       <div>
-        <p class="text-[11px] uppercase tracking-[0.15em] text-white/25 mb-4">Favorites</p>
+        <p class="text-[11px] uppercase tracking-[0.15em] text-text-muted mb-3 sm:mb-4">
+          Favorites
+        </p>
         <div class="flex flex-col gap-2">
           <div
             v-for="board in favoriteBoards"
             :key="board.id"
             @click="openBoard(board.id)"
-            class="cursor-pointer flex items-center gap-3 bg-white/[0.03] border border-white/[0.06] rounded-xl px-4 py-3 hover:bg-amber-500/[0.04] hover:border-amber-400/[0.12] transition-all"
+            class="cursor-pointer flex items-center gap-3 bg-bg-subtle border border-border-default rounded-xl px-3 sm:px-4 py-3 hover:bg-bg-avatar-favorite hover:border-border-avatar-favorite transition-all"
           >
             <div
-              class="w-8 h-8 rounded-lg bg-amber-500/15 border border-amber-400/20 flex items-center justify-center text-amber-300 text-xs font-semibold flex-shrink-0"
+              class="w-7 h-7 sm:w-8 sm:h-8 rounded-lg bg-bg-avatar-favorite border border-border-avatar-favorite flex items-center justify-center text-text-avatar-favorite text-xs font-semibold shrink-0"
             >
               {{ board.title.charAt(0).toUpperCase() }}
             </div>
             <div class="flex-1 min-w-0">
-              <p class="text-white/70 text-sm font-medium truncate">{{ board.title }}</p>
-              <p class="text-white/25 text-xs">{{ board.members_count }} members</p>
+              <p class="text-text-title text-sm font-medium truncate">{{ board.title }}</p>
+              <p class="text-text-muted text-xs">{{ board.members_count }} members</p>
             </div>
             <svg
-              class="w-3.5 h-3.5 text-red-400/50 flex-shrink-0"
+              class="w-3 h-3 sm:w-3.5 sm:h-3.5 text-text-favorite-icon shrink-0"
               viewBox="0 0 24 24"
               fill="currentColor"
             >
@@ -137,7 +140,7 @@ onMounted(() => {
               />
             </svg>
           </div>
-          <p v-if="favoriteBoards.length === 0" class="text-white/20 text-sm px-1">
+          <p v-if="favoriteBoards.length === 0" class="text-text-muted text-sm px-1">
             No favorites yet
           </p>
         </div>
@@ -145,26 +148,28 @@ onMounted(() => {
 
       <!-- ALL BOARDS -->
       <div>
-        <p class="text-[11px] uppercase tracking-[0.15em] text-white/25 mb-4">All boards</p>
+        <p class="text-[11px] uppercase tracking-[0.15em] text-text-muted mb-3 sm:mb-4">
+          All boards
+        </p>
         <div class="flex flex-col gap-2">
           <div
             v-for="board in boardStore.boardsList"
             :key="board.id"
             @click="openBoard(board.id)"
-            class="cursor-pointer flex items-center gap-3 bg-white/[0.03] border border-white/[0.06] rounded-xl px-4 py-3 hover:bg-white/[0.05] hover:border-white/[0.09] transition-all"
+            class="cursor-pointer flex items-center gap-3 bg-bg-subtle border border-border-default rounded-xl px-3 sm:px-4 py-3 hover:bg-bg-card-hover hover:border-border-hover transition-all"
           >
             <div
-              class="w-8 h-8 rounded-lg bg-indigo-500/10 border border-indigo-400/15 flex items-center justify-center text-indigo-300/80 text-xs font-semibold flex-shrink-0"
+              class="w-7 h-7 sm:w-8 sm:h-8 rounded-lg bg-bg-accent border border-border-accent flex items-center justify-center text-text-accent text-xs font-semibold shrink-0"
             >
               {{ board.title.charAt(0).toUpperCase() }}
             </div>
-            <span class="text-white/60 text-sm flex-1 truncate">{{ board.title }}</span>
+            <span class="text-text-title text-sm flex-1 truncate">{{ board.title }}</span>
             <span
-              class="text-[11px] px-2.5 py-1 rounded-lg font-medium flex-shrink-0"
+              class="text-[10px] sm:text-[11px] px-2 sm:px-2.5 py-0.5 sm:py-1 rounded-lg font-medium shrink-0"
               :class="
                 board.can_edit
-                  ? 'bg-indigo-500/10 border border-indigo-400/15 text-indigo-300/80'
-                  : 'bg-white/[0.04] border border-white/[0.07] text-white/30'
+                  ? 'bg-bg-accent border border-border-accent text-text-accent'
+                  : 'bg-bg-subtle border border-border-default text-text-muted'
               "
             >
               {{ board.can_edit ? 'admin' : 'member' }}

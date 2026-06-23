@@ -1,39 +1,47 @@
 <script setup lang="ts">
 import draggable from 'vuedraggable'
 import { ref, watch } from 'vue'
+
 import ListComp from './ListComp.vue'
-import type { List, ListPayload, ReorderListItem } from '@/features/lists/data/listsTypes'
-import { useTasksStore } from '@/features/tasks/store/tasksStore'
 import TaskAddComp from '@/features/tasks/components/TaskAddComp.vue'
+
+import type { List, ListPayload, ReorderListItem } from '@/features/lists/data/listsTypes'
 import type {
   DragTaskPayload,
   TaskDeletePayload,
   TaskPayload,
 } from '@/features/tasks/data/tasksTypes'
-import { useListsStore } from '../store/listsStore'
+
+import { useTasksStore } from '@/features/tasks/stores/tasksStore.ts'
+import { useListsStore } from '../stores/listsStore.ts'
+import { useMessageStore } from '@/stores/messageStore'
+import { useAsyncAction } from '@/services/functions/useAsyncAction'
+import { useConfirmStore } from '@/stores/confirmStore.ts'
 
 const props = defineProps<{
   lists: List[]
   canEdit: boolean
 }>()
 
+const emit = defineEmits<{
+  (e: 'edit', list: ListPayload): void
+  (e: 'delete', id: number): void
+  (e: 'open-task', id: number): void
+  (e: 'fetchTasks'): void
+}>()
+
+const messageStore = useMessageStore()
 const listStore = useListsStore()
 const taskStore = useTasksStore()
+const confirmStore = useConfirmStore()
+
+const { loading: isTaskLoading, run } = useAsyncAction()
 
 const localLists = ref<List[]>([])
 
 const selectedListId = ref<number | null>(null)
 const selectedBoardId = ref<number | null>(null)
 const showAddTaskModal = ref(false)
-
-const emit = defineEmits<{
-  (e: 'edit', list: ListPayload): void
-  (e: 'delete', id: number): void
-  (e: 'open-task', id: number): void
-  (e: 'add-task', listId: number): void
-  (e: 'open-modal'): void
-  (e: 'fetchTasks'): void
-}>()
 
 function openAddTask(listId: number, brdId: number) {
   selectedListId.value = listId
@@ -42,19 +50,47 @@ function openAddTask(listId: number, brdId: number) {
 }
 
 async function saveAdd(payload: TaskPayload) {
-  await taskStore.postTask({
-    ...payload,
-    list_id: selectedListId.value!,
-    brd_id: selectedBoardId.value!,
-  })
+  if (!selectedListId.value || !selectedBoardId.value) return
 
-  emit('fetchTasks')
-  showAddTaskModal.value = false
+  await run(
+    async () => {
+      await taskStore.postTask({
+        ...payload,
+        list_id: selectedListId.value!,
+        brd_id: selectedBoardId.value!,
+      })
+
+      emit('fetchTasks')
+      showAddTaskModal.value = false
+    },
+    {
+      success: 'Task created successfully',
+      error: 'Failed to create task',
+    },
+  )
 }
 
 async function handleDelete(payload: TaskDeletePayload) {
-  await taskStore.eraseTask(payload)
-  emit('fetchTasks')
+  const confirmed = await confirmStore.ask({
+    title: 'Delete task',
+    message: 'Are you sure you want to delete this task?',
+    confirmText: 'Delete',
+    cancelText: 'Cancel',
+    variant: 'danger',
+  })
+
+  if (!confirmed) return
+
+  await run(
+    async () => {
+      await taskStore.eraseTask(payload)
+      emit('fetchTasks')
+    },
+    {
+      success: 'Task deleted successfully',
+      error: 'Failed to delete task',
+    },
+  )
 }
 
 async function onListMove() {
@@ -62,16 +98,22 @@ async function onListMove() {
     list_id: list.id,
     position: index,
   }))
-  const payload = { lists: positions }
 
-  await listStore.reorderLists(payload)
+  try {
+    await listStore.reorderLists({ lists: positions })
+  } catch (err) {
+    console.log(err)
+    messageStore.fail('Failed to reorder lists')
+  }
 }
+
 async function handleTaskReorder(payload: DragTaskPayload[]) {
   try {
     await taskStore.moveTask(payload)
     emit('fetchTasks')
   } catch (err) {
     console.log(err)
+    messageStore.fail('Failed to reorder tasks')
   }
 }
 
@@ -83,6 +125,7 @@ watch(
   { immediate: true },
 )
 </script>
+
 <template>
   <draggable
     v-model="localLists"
@@ -107,5 +150,10 @@ watch(
     </template>
   </draggable>
 
-  <TaskAddComp v-if="showAddTaskModal" @save="saveAdd" @cancel="showAddTaskModal = false" />
+  <TaskAddComp
+    v-if="showAddTaskModal"
+    :loading="isTaskLoading"
+    @save="saveAdd"
+    @cancel="showAddTaskModal = false"
+  />
 </template>

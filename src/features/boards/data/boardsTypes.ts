@@ -6,6 +6,7 @@ export type BoardMember = {
   brd_id: number
   fullname: string
   username: string
+  role: string
 }
 
 export type Board = {
@@ -16,6 +17,7 @@ export type Board = {
   members_count: number
   is_favorite?: boolean
   creator: string
+  created_by: number
   can_edit: boolean
   members: BoardMember[]
 }

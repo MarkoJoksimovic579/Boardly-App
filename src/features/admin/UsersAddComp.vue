@@ -1,7 +1,8 @@
 <script setup lang="ts">
-import { ref, onMounted } from 'vue'
+import { ref, onMounted, computed } from 'vue'
 import api from '@/api'
 import { useSessionStore } from '@/stores/usersSessionStore'
+import BaseButton from '@/components/ui/BaseButton.vue'
 
 export type UserAddPayload = {
   usr_fullname: string
@@ -24,6 +25,10 @@ async function fetchRoles() {
   roles.value = res.data.data
 }
 
+const props = defineProps<{
+  loading?: boolean
+}>()
+
 onMounted(fetchRoles)
 
 const emit = defineEmits<{
@@ -37,6 +42,16 @@ const form = ref<UserAddPayload>({
   usr_email: '',
   usr_password: '',
   roles: [1],
+})
+
+const isFormValid = computed(() => {
+  return (
+    form.value.usr_fullname.trim() &&
+    form.value.usr_username.trim() &&
+    form.value.usr_email.trim() &&
+    form.value.usr_password.trim() &&
+    form.value.roles.length > 0
+  )
 })
 function save() {
   emit('save', {
@@ -130,7 +145,14 @@ function save() {
       <div class="modal-actions">
         <button @click="emit('cancel')" class="modal-cancel">Cancel</button>
 
-        <button @click="save" class="modal-primary">Create User</button>
+        <BaseButton
+          variant="primary"
+          :loading="props.loading"
+          :disabled="!isFormValid"
+          @click="save"
+        >
+          Save
+        </BaseButton>
       </div>
     </div>
   </div>

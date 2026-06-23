@@ -1,5 +1,10 @@
 <script setup lang="ts">
+import BaseButton from '@/components/ui/BaseButton.vue'
 import { ref } from 'vue'
+
+const props = defineProps<{
+  loading?: boolean
+}>()
 
 const emit = defineEmits<{
   (e: 'save', label: { name: string; color: string }): void
@@ -71,7 +76,14 @@ function add() {
       <div class="modal-actions">
         <button class="modal-cancel" @click="emit('cancel')">Cancel</button>
 
-        <button class="modal-primary" @click="add">Save</button>
+        <BaseButton
+          variant="primary"
+          :loading="props.loading"
+          :disabled="!form.name.trim() || !form.color"
+          @click="add"
+        >
+          Save
+        </BaseButton>
       </div>
     </div>
   </div>

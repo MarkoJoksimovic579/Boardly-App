@@ -3,7 +3,7 @@ import BoardsCardComp from '@/features/boards/components/BoardsCardComp.vue'
 import BoardsEditComp from '@/features/boards/components/BoardsEditComp.vue'
 import type { BoardPayload } from '@/features/boards/data/boardsTypes'
 
-import { useBoardStore } from '@/features/boards/store/boardsStore'
+import { useBoardStore } from '@/features/boards/stores/boardsStore'
 import { computed, onMounted, ref } from 'vue'
 import { useRouter } from 'vue-router'
 

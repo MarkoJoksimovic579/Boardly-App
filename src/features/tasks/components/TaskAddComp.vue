@@ -3,8 +3,13 @@ import { onMounted, ref } from 'vue'
 import { type Label, type TaskPayload } from '../data/tasksTypes'
 import { useSessionStore } from '@/stores/usersSessionStore'
 import api from '@/api'
+import BaseButton from '@/components/ui/BaseButton.vue'
 
 const session = useSessionStore()
+
+const props = defineProps<{
+  loading?: boolean
+}>()
 
 const emit = defineEmits<{
   (e: 'save', task: TaskPayload): void
@@ -108,7 +113,14 @@ onMounted(() => {
       <div class="modal-actions">
         <button class="modal-cancel" @click="emit('cancel')">Cancel</button>
 
-        <button class="modal-primary" @click="add">Save</button>
+        <BaseButton
+          variant="primary"
+          :disabled="!form.title?.trim() || !form.due_date"
+          :loading="props.loading"
+          @click="add"
+        >
+          Create task
+        </BaseButton>
       </div>
     </div>
   </div>

@@ -2,40 +2,49 @@
 import { useSessionStore } from '@/stores/usersSessionStore'
 import { ref, computed } from 'vue'
 import { useRouter } from 'vue-router'
+import { useAsyncAction } from '@/services/functions/useAsyncAction'
 
 const session = useSessionStore()
+const router = useRouter()
 
 const username = ref('')
 const password = ref('')
 const showPassword = ref(false)
-const isLoading = ref(false)
 const errors = ref<Record<string, string>>({})
 const loginFailed = ref(false)
-const router = useRouter()
+
+const { loading: isLoading, run } = useAsyncAction()
 
 function validate() {
   const e: Record<string, string> = {}
-  if (!username.value) e.username = 'Required'
-  if (!password.value) e.password = 'Required'
+
+  if (!username.value.trim()) e.username = 'Required'
+  if (!password.value.trim()) e.password = 'Required'
+
   errors.value = e
+
   return Object.keys(e).length === 0
 }
 
-const isFormValid = computed(() => username.value && password.value)
+const isFormValid = computed(() => {
+  return username.value.trim() && password.value.trim()
+})
 
 async function handleSubmit() {
   loginFailed.value = false
+
   if (!validate()) return
-  try {
-    isLoading.value = true
-    await session.login(username.value, password.value)
-    router.push('/app/boards')
-  } catch (err) {
-    loginFailed.value = true
-    console.error(err)
-  } finally {
-    isLoading.value = false
-  }
+
+  await run(
+    async () => {
+      await session.login(username.value.trim(), password.value)
+
+      router.push('/app/dashboard')
+    },
+    {
+      error: 'Invalid username or password',
+    },
+  )
 }
 </script>
 
@@ -43,7 +52,7 @@ async function handleSubmit() {
   <div class="min-h-screen flex font-[system-ui] bg-[#0a0a0a]">
     <!-- ── LEFT PANEL ── -->
     <div
-      class="hidden lg:flex lg:w-[50%] relative flex-col justify-between p-12 overflow-hidden bg-[#0a0a0a] border-r border-white/[0.06]"
+      class="hidden lg:flex lg:w-[50%] relative flex-col justify-between p-12 overflow-hidden bg-[#0a0a0a] border-r border-white/6"
     >
       <!-- Grid texture -->
       <div
@@ -58,11 +67,11 @@ async function handleSubmit() {
 
       <!-- Glow blobs -->
       <div
-        class="absolute top-[-80px] left-[-80px] w-[400px] h-[400px] rounded-full opacity-[0.18]"
+        class="absolute -top-20 -left-20 w-100 h-100 rounded-full opacity-[0.18]"
         style="background: radial-gradient(circle, #6366f1 0%, transparent 70%)"
       ></div>
       <div
-        class="absolute bottom-[-60px] right-[-60px] w-[300px] h-[300px] rounded-full opacity-10"
+        class="absolute -bottom-15 -right-15 w-75 h-75 rounded-full opacity-10"
         style="background: radial-gradient(circle, #a78bfa 0%, transparent 70%)"
       ></div>
 
@@ -88,7 +97,7 @@ async function handleSubmit() {
       <div class="relative z-10 space-y-8">
         <div class="space-y-4">
           <div
-            class="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-white/[0.06] border border-white/10 text-white/50 text-xs tracking-wider uppercase"
+            class="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-white/6 border border-white/10 text-white/50 text-xs tracking-wider uppercase"
           >
             <span class="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse inline-block"></span>
             Welcome back
@@ -101,7 +110,7 @@ async function handleSubmit() {
               >let's go.</span
             >
           </h2>
-          <p class="text-white/40 text-sm leading-relaxed max-w-[260px]">
+          <p class="text-white/40 text-sm leading-relaxed max-w-65">
             Sign in to access your boards, tasks, and team workspace.
           </p>
         </div>
@@ -117,7 +126,7 @@ async function handleSubmit() {
             class="flex items-center gap-3 text-white/60 text-sm"
           >
             <div
-              class="w-5 h-5 rounded-full bg-white/[0.06] border border-white/10 flex items-center justify-center flex-shrink-0"
+              class="w-5 h-5 rounded-full bg-white/6 border border-white/10 flex items-center justify-center shrink-0"
             >
               <svg viewBox="0 0 12 12" fill="none" class="w-3 h-3 text-indigo-400">
                 <path
@@ -158,11 +167,11 @@ async function handleSubmit() {
         "
       ></div>
       <div
-        class="absolute top-[-100px] right-[-100px] w-[450px] h-[450px] rounded-full opacity-[0.08]"
+        class="absolute -top-25 -right-25 w-112.5 h-112.5 rounded-full opacity-[0.08]"
         style="background: radial-gradient(circle, #6366f1 0%, transparent 70%)"
       ></div>
 
-      <div class="w-full max-w-[380px] space-y-7 relative z-10">
+      <div class="w-full max-w-95 space-y-7 relative z-10">
         <!-- Header -->
         <div class="space-y-1.5">
           <h1 class="text-2xl font-bold text-white tracking-tight">Sign in to your account</h1>
@@ -175,7 +184,7 @@ async function handleSubmit() {
             v-if="loginFailed"
             class="flex items-center gap-2.5 px-3.5 py-3 rounded-xl bg-red-500/10 border border-red-500/20 text-red-400 text-xs"
           >
-            <svg viewBox="0 0 16 16" fill="none" class="w-4 h-4 flex-shrink-0">
+            <svg viewBox="0 0 16 16" fill="none" class="w-4 h-4 shrink-0">
               <circle cx="8" cy="8" r="6.5" stroke="currentColor" stroke-width="1.3" />
               <path
                 d="M8 5v3.5M8 10.5h.01"
@@ -194,15 +203,15 @@ async function handleSubmit() {
               v-model="username"
               type="text"
               autocomplete="username"
-              class="w-full h-11 px-3.5 text-sm rounded-xl border outline-none transition-all duration-150 bg-white/[0.06] text-white placeholder:text-white/20"
+              class="w-full h-11 px-3.5 text-sm rounded-xl border outline-none transition-all duration-150 bg-white/6 text-white placeholder:text-white/20"
               :class="
                 errors.username
-                  ? 'border-red-500/40 focus:border-red-400/60 focus:bg-white/[0.08]'
-                  : 'border-white/[0.09] focus:border-indigo-400/50 focus:bg-white/[0.08]'
+                  ? 'border-red-500/40 focus:border-red-400/60 focus:bg-white/8'
+                  : 'border-white/9 focus:border-indigo-400/50 focus:bg-white/8'
               "
             />
             <p v-if="errors.username" class="text-[11px] text-red-400/80 flex items-center gap-1">
-              <svg viewBox="0 0 12 12" fill="none" class="w-2.5 h-2.5 flex-shrink-0">
+              <svg viewBox="0 0 12 12" fill="none" class="w-2.5 h-2.5 shrink-0">
                 <circle cx="6" cy="6" r="5" stroke="currentColor" stroke-width="1.2" />
                 <path
                   d="M6 3.5V6.5M6 8H6.01"
@@ -232,11 +241,11 @@ async function handleSubmit() {
                 v-model="password"
                 :type="showPassword ? 'text' : 'password'"
                 autocomplete="current-password"
-                class="w-full h-11 pl-3.5 pr-10 text-sm rounded-xl border outline-none transition-all duration-150 bg-white/[0.06] text-white placeholder:text-white/20"
+                class="w-full h-11 pl-3.5 pr-10 text-sm rounded-xl border outline-none transition-all duration-150 bg-white/6 text-white placeholder:text-white/20"
                 :class="
                   errors.password
-                    ? 'border-red-500/40 focus:border-red-400/60 focus:bg-white/[0.08]'
-                    : 'border-white/[0.09] focus:border-indigo-400/50 focus:bg-white/[0.08]'
+                    ? 'border-red-500/40 focus:border-red-400/60 focus:bg-white/8'
+                    : 'border-white/9 focus:border-indigo-400/50 focus:bg-white/8'
                 "
               />
               <button
@@ -263,7 +272,7 @@ async function handleSubmit() {
               </button>
             </div>
             <p v-if="errors.password" class="text-[11px] text-red-400/80 flex items-center gap-1">
-              <svg viewBox="0 0 12 12" fill="none" class="w-2.5 h-2.5 flex-shrink-0">
+              <svg viewBox="0 0 12 12" fill="none" class="w-2.5 h-2.5 shrink-0">
                 <circle cx="6" cy="6" r="5" stroke="currentColor" stroke-width="1.2" />
                 <path
                   d="M6 3.5V6.5M6 8H6.01"

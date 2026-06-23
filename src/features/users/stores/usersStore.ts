@@ -5,6 +5,7 @@ import { useSessionStore } from '@/stores/usersSessionStore'
 import api from '@/api'
 import type { User } from '../data/usersMockData'
 import type { UserAddPayload } from '@/features/admin/UsersAddComp.vue'
+import { ensureSuccess } from '@/services/functions/ensureSuccess'
 
 export const useUsersStore = defineStore('users', () => {
   const session = useSessionStore()
@@ -25,96 +26,71 @@ export const useUsersStore = defineStore('users', () => {
   })
 
   async function fetchUsers() {
-    try {
-      if (!session.sid) return
+    if (!session.sid) throw new Error('No session')
 
-      const res = await api.getUsers(session.sid)
+    const res = await api.getUsers(session.sid)
 
-      if (res) {
-        const data = res.data.data
-        usersList.value = data
-      }
-    } catch (err) {
-      console.log(err)
-    }
+    ensureSuccess(res)
+
+    usersList.value = res.data.data
   }
 
   async function eraseUsers(id: number) {
-    try {
-      if (!session.sid) return
+    if (!session.sid) throw new Error('No session')
 
-      const res = await api.deleteUsers(id, session.sid)
+    const res = await api.deleteUsers(id, session.sid)
 
-      if (res.data.success) {
-        fetchUsers()
-        alert('user deleted')
-      }
-    } catch (err) {
-      console.log(err)
-    }
+    ensureSuccess(res)
+
+    return res.data.data
   }
 
   async function addUsers(newUser: UserAddPayload) {
-    try {
-      if (!session.sid) return
+    if (!session.sid) throw new Error('No session')
 
-      const res = await api.postUsers(newUser, session.sid)
+    const res = await api.postUsers(newUser, session.sid) // ← ovo baca AxiosError za 403
+    // ensureSuccess se nikad ne poziva za 403 jer await već baca!
+    ensureSuccess(res)
 
-      if (res.data.success) {
-        fetchUsers()
-        alert('user added')
-      }
-    } catch (err) {
-      console.log(err)
-    }
+    return res.data.data
   }
 
   async function fetchUserById(id: number) {
-    try {
-      if (!session.sid) return
+    if (!session.sid) throw new Error('No session')
 
-      const res = await api.getUsersById(id, session.sid)
+    const res = await api.getUsersById(id, session.sid)
 
-      if (res) {
-        const data = res.data.data
-        return data as User
-      }
-    } catch (err) {
-      console.log(err)
-    }
+    ensureSuccess(res)
+
+    return res.data.data as User
   }
 
   async function updateUsers(updatedUser: User) {
-    try {
-      if (!session.sid) return
+    if (!session.sid) throw new Error('No session')
 
-      const res = await api.editUsers(updatedUser, session.sid)
+    const res = await api.editUsers(updatedUser, session.sid)
 
-      return res.data.message
-    } catch (err) {
-      console.log(err)
-    }
+    ensureSuccess(res)
+
+    return res.data.data
   }
-  async function adminUpdateUsers(updatedUser: User) {
-    try {
-      if (!session.sid) return
 
-      const res = await api.adminEditUsers(updatedUser, session.sid)
-      if (res.data.success) {
-        fetchUsers()
-        alert('user edited')
-      }
-      return res.data.message
-    } catch (err) {
-      console.log(err)
-    }
+  async function adminUpdateUsers(updatedUser: User) {
+    if (!session.sid) throw new Error('No session')
+
+    const res = await api.adminEditUsers(updatedUser, session.sid)
+
+    ensureSuccess(res)
+
+    return res.data.data
   }
 
   return {
     usersList,
-    fetchUsers,
-    filteredUsers,
     nameSearch,
+    filteredUsers,
+
+    fetchUsers,
     eraseUsers,
     addUsers,
     fetchUserById,

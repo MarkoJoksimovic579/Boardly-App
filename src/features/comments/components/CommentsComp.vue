@@ -16,10 +16,10 @@ const formattedDate = (dateStr: string) => dayjs(dateStr).format('D. MMM YYYY. H
 </script>
 
 <template>
-  <div class="flex gap-3 py-3.5 border-b border-white/[0.05] last:border-none">
+  <div class="flex gap-3 py-3.5 border-b border-border-divider last:border-none">
     <!-- Avatar -->
     <div
-      class="w-8 h-8 min-w-[32px] rounded-full bg-blue-500/20 text-blue-400 flex items-center justify-center text-xs font-medium"
+      class="w-8 h-8 min-w-[32px] rounded-full bg-bg-accent text-text-accent flex items-center justify-center text-xs font-medium"
     >
       {{ initials(props.comment.username) }}
     </div>
@@ -27,15 +27,17 @@ const formattedDate = (dateStr: string) => dayjs(dateStr).format('D. MMM YYYY. H
     <!-- Sadržaj -->
     <div class="flex-1 min-w-0">
       <div class="flex items-center gap-2">
-        <span class="text-sm font-medium text-white/80">
+        <span class="text-sm font-medium text-text-title">
           {{ props.comment.username }}
         </span>
-        <span class="text-xs text-white/30">
+
+        <span class="text-xs text-text-muted">
           {{ formattedDate(props.comment.created_at) }}
         </span>
+
         <button
-          class="ml-auto text-red-400/60 hover:text-red-400 transition-colors p-0.5 rounded cursor-pointer"
-          title="Obriši komentar"
+          class="ml-auto text-text-danger opacity-60 hover:opacity-100 transition-all p-0.5 rounded"
+          title="Delete Comment"
           @click="emit('delete', props.comment.id)"
         >
           <svg
@@ -57,7 +59,7 @@ const formattedDate = (dateStr: string) => dayjs(dateStr).format('D. MMM YYYY. H
         </button>
       </div>
 
-      <p class="text-sm text-white/60 leading-relaxed mt-1">
+      <p class="text-sm text-text-muted leading-relaxed mt-1">
         {{ props.comment.text }}
       </p>
     </div>

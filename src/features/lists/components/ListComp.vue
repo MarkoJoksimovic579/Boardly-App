@@ -7,13 +7,16 @@ import {
   type TaskDeletePayload,
   type TaskEditPayload,
 } from '@/features/tasks/data/tasksTypes'
-import { useTasksStore } from '@/features/tasks/store/tasksStore'
+import { useTasksStore } from '@/features/tasks/stores/tasksStore'
 import { ref, watch } from 'vue'
-import { useListsStore } from '../store/listsStore'
+import { useListsStore } from '../stores/listsStore'
 import draggable from 'vuedraggable'
 import type { DragTaskPayload } from '@/features/tasks/data/tasksTypes'
 import { useDragState } from '@/services/functions/useDragState'
 
+import { useAsyncAction } from '@/services/functions/useAsyncAction'
+
+const { loading: isTaskLoading, run } = useAsyncAction()
 const props = defineProps<{
   list: List
   canEdit: boolean
@@ -48,13 +51,19 @@ const emit = defineEmits<{
   (e: 'reorder-tasks', payload: DragTaskPayload[]): void
 }>()
 
-function onTaskChange() {
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+function onTaskChange(event: any) {
+  // Ako je task OTIŠAO iz ove liste (removed), ne emitujemo reorder
+  // Reorder se samo šalje kada task DOĐE ili se SORTIRA unutar iste liste
+  if (event.removed) return
+
   const payload: DragTaskPayload[] = localTasks.value.map((task, index) => ({
     tsk_id: task.id,
     tsk_position: index,
     list_id: props.list.id,
     brd_id: task.brd_id,
   }))
+
   emit('reorder-tasks', payload)
 }
 
@@ -70,17 +79,20 @@ function onDelete(payload: TaskDeletePayload) {
 }
 
 async function saveEdit(task: TaskEditPayload) {
-  try {
-    await taskStore.putTask(task)
-    listStore.fetchLists(task.brd_id!)
-    setTimeout(() => {
-      showEditTaskModal.value = false
-    }, 1500)
-  } catch (err) {
-    console.log(err)
-  }
-}
+  await run(
+    async () => {
+      await taskStore.putTask(task)
+      await listStore.fetchLists(task.brd_id!)
 
+      showEditTaskModal.value = false
+      selectedTask.value = undefined
+    },
+    {
+      success: 'Task updated successfully',
+      error: 'Failed to update task',
+    },
+  )
+}
 watch(
   () => props.list.tasks,
   (tasks) => {
@@ -255,6 +267,7 @@ watch(
     <TaskEditComp
       v-if="showEditTaskModal && selectedTask"
       :task="selectedTask"
+      :loading="isTaskLoading"
       @cancel="showEditTaskModal = false"
       @save="saveEdit"
     />

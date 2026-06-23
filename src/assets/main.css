@@ -2,6 +2,13 @@
 
 @import 'tailwindcss';
 
+@import './themes/light.css';
+@import './themes/blue.css';
+@import './themes/coffee.css';
+@import './themes/midnight.css';
+@import './themes/obsidian.css';
+@import './themes/matrix.css';
+
 @theme {
   --font-sans: 'Poppins', sans-serif;
   --font-mono: 'Fira Mono', monospace;
@@ -58,55 +65,9 @@
   --color-bg-btn-edit: rgba(59, 130, 246, 0.2);
   --color-bg-btn-edit-hover: rgba(59, 130, 246, 0.3);
   --color-text-btn-edit: #93c5fd;
-}
-/* LIGHT TEMA */
-[data-theme='light'] {
-  --color-text-title: rgba(0, 0, 0, 0.85);
-  --color-text-body: rgba(0, 0, 0, 0.45);
-  --color-text-muted: rgba(0, 0, 0, 0.35);
-  --color-text-subtle: rgba(0, 0, 0, 0.45);
-  --color-text-accent: #4f46e5;
-  --color-text-danger: #dc2626;
-  --color-text-white: #000000;
 
-  --color-bg-card: #ffffff;
-  --color-bg-card-hover: #f5f5f5;
-  --color-bg-subtle: rgba(0, 0, 0, 0.04);
-  --color-bg-accent: rgba(99, 102, 241, 0.1);
-  --color-bg-accent-hover: rgba(99, 102, 241, 0.18);
-  --color-bg-danger-hover: rgba(220, 38, 38, 0.08);
-
-  --color-border-default: rgba(0, 0, 0, 0.08);
-  --color-border-hover: rgba(0, 0, 0, 0.14);
-  --color-border-divider: rgba(0, 0, 0, 0.07);
-  --color-border-accent: rgba(99, 102, 241, 0.25);
-
-  --color-bg-nav-active: rgba(0, 0, 0, 0.07);
-  --color-bg-nav-hover: rgba(0, 0, 0, 0.04);
-  --color-text-nav-active: rgba(0, 0, 0, 0.8);
-  --color-text-nav-inactive: rgba(0, 0, 0, 0.45);
-
-  --color-bg-avatar-favorite: rgba(245, 158, 11, 0.12);
-  --color-border-avatar-favorite: rgba(217, 119, 6, 0.25);
-  --color-text-avatar-favorite: #b45309;
-
-  --color-bg-user-panel: rgba(0, 0, 0, 0.03);
-  --color-border-user-panel: rgba(0, 0, 0, 0.07);
-  --color-text-username: rgba(0, 0, 0, 0.7);
-
-  --color-text-board-item: rgba(0, 0, 0, 0.55);
-  --color-text-favorite-icon: rgba(220, 38, 38, 0.45);
-
-  --color-bg-modal: #ffffff;
-  --color-border-modal: rgba(0, 0, 0, 0.1);
-
-  --color-bg-input: rgba(0, 0, 0, 0.04);
-  --color-border-input-focus: rgba(99, 102, 241, 0.5);
-
-  --color-bg-btn-primary: #6366f1;
-  --color-bg-btn-primary-hover: #4f46e5;
-
-  --color-bg-page: #f0f0f0;
+  --color-bg-btn-gradient-from: #6366f1;
+  --color-bg-btn-gradient-to: #8b5cf6;
 }
 
 @layer base {
@@ -137,6 +98,10 @@
     @apply fixed inset-0 z-50 bg-black/60 flex items-end md:items-center justify-center;
   }
 
+  .card {
+    @apply bg-bg-card border border-border-default rounded-2xl;
+  }
+
   .modal-container {
     @apply w-full md:w-[420px]
            bg-bg-modal border border-border-modal
@@ -145,9 +110,18 @@
            shadow-xl;
   }
 
+  .modal-header {
+    @apply mb-4;
+  }
+
   .modal-title {
     @apply text-text-title text-base md:text-lg font-semibold mb-4;
   }
+
+  .modal-subtitle {
+    @apply text-text-body text-lg mt-1;
+  }
+
   .modal-label {
     @apply text-text-title text-base md:text-[14px] font-semibold mb-4;
   }
@@ -170,28 +144,97 @@
     @apply flex justify-end gap-2;
   }
 
-  .modal-cancel {
-    @apply px-3 py-2 rounded-lg text-text-muted hover:text-text-title transition;
-  }
+  /* BUTTONS */
 
+  .base-button,
   .modal-primary {
-    @apply px-4 py-2 rounded-lg
-           bg-bg-btn-primary hover:bg-bg-btn-primary-hover
-           text-white font-medium transition;
-  }
-  .modal-header {
-    @apply mb-4;
+    @apply inline-flex items-center justify-center gap-2
+         px-4 py-2 rounded-2xl mt-2
+         text-sm font-medium
+         transition select-none;
   }
 
-  .modal-subtitle {
-    @apply text-text-body text-lg mt-1;
+  .base-button-primary,
+  .modal-primary {
+    background: linear-gradient(
+      135deg,
+      var(--color-bg-btn-gradient-from),
+      var(--color-bg-btn-gradient-to)
+    );
+
+    @apply text-white hover:opacity-90;
   }
+
+  .base-button-cancel,
+  .modal-cancel {
+    @apply inline-flex items-center justify-center gap-2
+         px-3 py-2 rounded-2xl
+         mt-2
+         text-sm font-medium
+         text-text-muted
+         hover:text-text-title
+         hover:bg-bg-subtle
+         transition;
+  }
+  .btn-primary {
+    background: linear-gradient(
+      135deg,
+      var(--color-bg-btn-gradient-from),
+      var(--color-bg-btn-gradient-to)
+    );
+  }
+  .base-button-danger {
+    @apply inline-flex items-center justify-center gap-2
+         px-4 py-2 rounded-2xl
+         text-sm font-medium
+         bg-bg-danger-hover
+         text-text-danger
+         border border-border-default
+         hover:border-border-hover;
+  }
+
+  .base-button:disabled,
+  .modal-primary:disabled,
+  .modal-cancel:disabled {
+    @apply opacity-60;
+  }
+
+  .btn-loading {
+    @apply opacity-70 pointer-events-none;
+  }
+
+  /* SPINNER */
+
+  .spinner {
+    @apply inline-block rounded-full border-2 border-text-muted border-t-text-title animate-spin;
+    width: 18px;
+    height: 18px;
+  }
+
+  .spinner-sm {
+    width: 14px;
+    height: 14px;
+  }
+
+  .spinner-lg {
+    width: 28px;
+    height: 28px;
+  }
+
+  /* INPUTS */
+
   .app-input {
     @apply w-full h-10 px-3 rounded-lg
-         bg-bg-input border border-border-default
-         text-text-title placeholder:text-text-muted
-         outline-none transition
-         focus:border-border-accent;
+           bg-bg-input border border-border-default
+           text-text-title placeholder:text-text-muted
+           outline-none transition
+           focus:border-border-accent;
+  }
+
+  /* CARDS */
+
+  .member-card {
+    @apply bg-bg-user-panel border border-border-user-panel rounded-xl;
   }
 }
 

@@ -1,0 +1,36 @@
+[data-theme='coffee'] {
+  --color-text-title: #f5e6d3;
+  --color-text-body: #d6c2aa;
+  --color-text-muted: #b89f82;
+  --color-text-subtle: #c9b296;
+  --color-text-accent: #d4a574;
+  --color-text-danger: #ef4444;
+  --color-text-white: #ffffff;
+
+  --color-bg-page: #2b1f1a;
+  --color-bg-card: #3a2a23;
+  --color-bg-card-hover: #47342c;
+  --color-bg-subtle: rgba(255, 255, 255, 0.04);
+
+  --color-bg-accent: rgba(212, 165, 116, 0.15);
+  --color-bg-accent-hover: rgba(212, 165, 116, 0.25);
+
+  --color-border-default: rgba(255, 255, 255, 0.08);
+  --color-border-hover: rgba(255, 255, 255, 0.15);
+  --color-border-divider: rgba(255, 255, 255, 0.06);
+  --color-border-accent: rgba(212, 165, 116, 0.25);
+
+  --color-bg-modal: #33251f;
+  --color-border-modal: rgba(255, 255, 255, 0.08);
+
+  --color-bg-input: rgba(255, 255, 255, 0.05);
+
+  --color-bg-btn-primary: #a16207;
+  --color-bg-btn-primary-hover: #ca8a04;
+
+  --color-bg-user-panel: rgba(255, 255, 255, 0.03);
+  --color-border-user-panel: rgba(255, 255, 255, 0.06);
+
+  --color-bg-btn-gradient-from: #92400e;
+  --color-bg-btn-gradient-to: #b45309;
+}

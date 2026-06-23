@@ -4,6 +4,7 @@ import { defineStore } from 'pinia'
 import { useSessionStore } from '@/stores/usersSessionStore'
 import api from '@/api'
 import type { Board, BoardPayload } from '../data/boardsTypes'
+import { ensureSuccess } from '@/services/functions/ensureSuccess'
 
 export const useBoardStore = defineStore('boards', () => {
   const boardsList = ref<Board[]>([])
@@ -35,67 +36,65 @@ export const useBoardStore = defineStore('boards', () => {
   const session = useSessionStore()
 
   async function fetchBoards() {
-    try {
-      if (!session.sid) return
+    if (!session.sid) throw new Error('No session')
 
-      const res = await api.getBoards(session.sid)
-      const data = res.data.data as Board[]
+    const res = await api.getBoards()
 
-      boardsList.value = data
-    } catch (err) {
-      console.log(err)
-    }
+    ensureSuccess(res)
+
+    boardsList.value = res.data.data
   }
 
   async function eraseBoards(id: number) {
-    try {
-      if (!session.sid) return
+    if (!session.sid) throw new Error('No session')
 
-      const res = await api.deleteBoards(id, session.sid)
+    const res = await api.deleteBoards(id, session.sid)
 
-      console.log(res)
-    } catch (err) {
-      console.log(err)
-    }
+    ensureSuccess(res)
+
+    return res.data.data
   }
+
   async function putBoards(updatedBoard: BoardPayload) {
-    try {
-      if (!session.sid) return
+    if (!session.sid) throw new Error('No session')
 
-      const res = await api.editBoards(updatedBoard, session.sid)
+    const res = await api.editBoards(updatedBoard, session.sid)
 
-      console.log(res)
-    } catch (err) {
-      console.log(err)
-    }
+    ensureSuccess(res)
+
+    await fetchBoards()
+
+    return res.data.data
   }
-  async function postBoards(board: BoardPayload) {
-    try {
-      if (!session.sid) return
-      console.log('SID:', session.sid)
-      const res = await api.addBoards(board, session.sid)
 
-      console.log(res)
-    } catch (err) {
-      console.log(err)
-    }
+  async function postBoards(board: BoardPayload) {
+    if (!session.sid) throw new Error('No session')
+
+    const res = await api.addBoards(board, session.sid)
+
+    ensureSuccess(res)
+
+    return res.data.data
   }
 
   async function eraseFavorites(id: number) {
-    try {
-      if (!session.sid) return
-      await api.deleteFavorites(id, session.sid)
-    } catch (err) {
-      console.log(err)
-    }
+    if (!session.sid) throw new Error('No session')
+
+    const res = await api.deleteFavorites(id, session.sid)
+
+    ensureSuccess(res)
+
+    return res.data.data
   }
+
   async function addFavorites(id: number) {
-    try {
-      if (!session.sid) return
-      await api.postFavorites(id, session.sid)
-    } catch (err) {
-      console.log(err)
-    }
+    if (!session.sid) throw new Error('No session')
+
+    const res = await api.postFavorites(id, session.sid)
+
+    ensureSuccess(res)
+
+    return res.data.data
   }
 
   return {

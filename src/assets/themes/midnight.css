@@ -1,0 +1,53 @@
+[data-theme='midnight-rose'] {
+  --color-text-title: #fce7f3;
+  --color-text-body: #d4a0b8;
+  --color-text-muted: #a87090;
+  --color-text-subtle: #c490a8;
+  --color-text-accent: #f472b6;
+  --color-text-danger: #f87171;
+  --color-text-white: #ffffff;
+
+  --color-bg-page: #0f0810;
+  --color-bg-card: #1a0f1c;
+  --color-bg-card-hover: #231528;
+  --color-bg-subtle: rgba(244, 114, 182, 0.04);
+  --color-bg-accent: rgba(244, 114, 182, 0.12);
+  --color-bg-accent-hover: rgba(244, 114, 182, 0.2);
+  --color-bg-danger-hover: rgba(239, 68, 68, 0.1);
+
+  --color-border-default: rgba(244, 114, 182, 0.08);
+  --color-border-hover: rgba(244, 114, 182, 0.18);
+  --color-border-divider: rgba(244, 114, 182, 0.06);
+  --color-border-accent: rgba(244, 114, 182, 0.25);
+
+  --color-bg-modal: #140c16;
+  --color-border-modal: rgba(244, 114, 182, 0.1);
+
+  --color-bg-input: rgba(244, 114, 182, 0.05);
+  --color-border-input-focus: rgba(244, 114, 182, 0.4);
+
+  --color-bg-btn-primary: #be185d;
+  --color-bg-btn-primary-hover: #ec4899;
+  --color-bg-btn-edit: rgba(244, 114, 182, 0.15);
+  --color-bg-btn-edit-hover: rgba(244, 114, 182, 0.25);
+  --color-text-btn-edit: #f9a8d4;
+
+  --color-bg-nav-active: rgba(244, 114, 182, 0.08);
+  --color-bg-nav-hover: rgba(244, 114, 182, 0.05);
+  --color-text-nav-active: #fce7f3;
+  --color-text-nav-inactive: rgba(244, 114, 182, 0.55);
+
+  --color-bg-avatar-favorite: rgba(251, 191, 36, 0.12);
+  --color-border-avatar-favorite: rgba(251, 191, 36, 0.2);
+  --color-text-avatar-favorite: rgba(252, 211, 77, 0.9);
+
+  --color-bg-user-panel: rgba(244, 114, 182, 0.04);
+  --color-border-user-panel: rgba(244, 114, 182, 0.08);
+  --color-text-username: #fce7f3;
+
+  --color-text-board-item: rgba(244, 114, 182, 0.6);
+  --color-text-favorite-icon: rgba(248, 113, 113, 0.5);
+
+  --color-bg-btn-gradient-from: #be185d;
+  --color-bg-btn-gradient-to: #9333ea;
+}

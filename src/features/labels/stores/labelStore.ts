@@ -24,7 +24,6 @@ export const useLabelStore = defineStore('labels', () => {
       const res = await api.postLabels(newLabel.name, newLabel.color, session.sid)
 
       if (res.data.success) {
-        alert('label added')
         fetchLabels()
       }
     } catch (err) {
@@ -37,7 +36,6 @@ export const useLabelStore = defineStore('labels', () => {
       const res = await api.putLabels(newLabel.id, newLabel.name, newLabel.color, session.sid)
 
       if (res.data.success) {
-        alert('label edit')
         fetchLabels()
       }
     } catch (err) {
@@ -50,7 +48,6 @@ export const useLabelStore = defineStore('labels', () => {
     try {
       const res = await api.deleteLabels(id, session.sid)
       if (res.data.success) {
-        alert('label deleted')
         fetchLabels()
       }
     } catch (err) {

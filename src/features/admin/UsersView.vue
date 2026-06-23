@@ -5,29 +5,73 @@ import UsersListModal from '../users/components/UsersListModal.vue'
 import { useUsersStore } from '../users/stores/usersStore'
 import UsersAddComp, { type UserAddPayload } from './UsersAddComp.vue'
 import UsersEditModal from './UsersEditModal.vue'
+import { useAsyncAction } from '@/services/functions/useAsyncAction.ts'
+import { useConfirmStore } from '@/stores/confirmStore.ts'
 
 const userStore = useUsersStore()
 const showEditUser = ref(false)
 const editingUser = ref<User>()
 const showAddUserModal = ref(false)
+const confirmStore = useConfirmStore()
+
+const { loading: isUserLoading, run } = useAsyncAction()
 
 function handleEdit(user: User) {
-  editingUser.value = user
+  editingUser.value = { ...user }
   showEditUser.value = true
 }
 
-function handleDelete(id: number) {
-  userStore.eraseUsers(id)
-}
-function handleSaveAdd(newUser: UserAddPayload) {
-  userStore.addUsers(newUser)
-  showAddUserModal.value = false
+async function handleDelete(id: number) {
+  const confirmed = await confirmStore.ask({
+    title: 'Delete user',
+    message: 'Are you sure you want to delete this user?',
+    confirmText: 'Delete',
+    cancelText: 'Cancel',
+    variant: 'danger',
+  })
+
+  if (!confirmed) return
+  await run(
+    async () => {
+      await userStore.eraseUsers(id)
+      await userStore.fetchUsers()
+    },
+    {
+      success: 'User deleted successfully',
+      error: 'Failed to delete user',
+    },
+  )
 }
 
-function handleSaveEdit(updatedUser: User) {
-  userStore.adminUpdateUsers(updatedUser)
-  userStore.fetchUsers()
-  showEditUser.value = false
+async function handleSaveAdd(newUser: UserAddPayload) {
+  await run(
+    async () => {
+      await userStore.addUsers(newUser)
+      await userStore.fetchUsers()
+
+      showAddUserModal.value = false
+    },
+    {
+      success: 'User updated successfully',
+      error: 'Failed to update user',
+    },
+  )
+}
+
+async function handleSaveEdit(updatedUser: User) {
+  await run(
+    async () => {
+      await userStore.adminUpdateUsers(updatedUser)
+      await userStore.fetchUsers()
+
+      showEditUser.value = false
+      editingUser.value = undefined
+    },
+    {
+      success: 'User updated successfully',
+      error: 'Failed to update user',
+    },
+  )
 }
 </script>
 
@@ -111,14 +155,17 @@ function handleSaveEdit(updatedUser: User) {
     <UsersListModal @edit="handleEdit" @delete="handleDelete" />
     <UsersAddComp
       v-if="showAddUserModal"
+      :loading="isUserLoading"
       @cancel="showAddUserModal = false"
       @save="handleSaveAdd"
-    ></UsersAddComp>
+    />
+
     <UsersEditModal
       v-if="showEditUser && editingUser"
       :user="editingUser"
+      :loading="isUserLoading"
       @save="handleSaveEdit"
       @cancel="showEditUser = false"
-    ></UsersEditModal>
+    />
   </div>
 </template>

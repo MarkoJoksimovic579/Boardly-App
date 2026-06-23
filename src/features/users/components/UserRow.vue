@@ -24,6 +24,17 @@ const emit = defineEmits<{
       {{ props.user.usr_email }}
     </td>
     <td class="px-5 py-3">
+      <div class="flex flex-wrap gap-1">
+        <span
+          v-for="role in props.user.roles"
+          :key="role.rol_id"
+          class="px-2 py-0.5 rounded-full text-xs border border-border-accent bg-bg-accent text-text-accent"
+        >
+          {{ role.rol_name }}
+        </span>
+      </div>
+    </td>
+    <td class="px-5 py-3">
       <div class="flex gap-2 justify-end">
         <button
           @click="emit('edit', user)"
@@ -67,6 +78,15 @@ const emit = defineEmits<{
         </div>
         <span class="text-text-body text-xs">{{ props.user.usr_fullname }}</span>
         <span class="text-text-muted text-xs">{{ props.user.usr_email }}</span>
+        <div class="flex flex-wrap gap-1 mt-1">
+          <span
+            v-for="role in props.user.roles"
+            :key="role.rol_id"
+            class="px-2 py-0.5 rounded-full text-xs border border-border-accent bg-bg-accent text-text-accent"
+          >
+            {{ role.rol_name }}
+          </span>
+        </div>
       </div>
     </td>
   </tr>

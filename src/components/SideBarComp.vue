@@ -1,15 +1,21 @@
 <script setup lang="ts">
 import { useSessionStore } from '@/stores/usersSessionStore'
-import { useBoardStore } from '@/features/boards/store/boardsStore'
+import { useBoardStore } from '@/features/boards/stores/boardsStore.ts'
 import { computed, onMounted, ref } from 'vue'
 import { useRouter } from 'vue-router'
-import { useBoardUiStore } from '@/features/boards/store/boardUiStore'
+import { useBoardUiStore } from '@/features/boards/stores/boardUiStore.ts'
+import SettingsComp from './SettingsComp.vue'
+
+import ThemeSelectorComp from './ThemeSelectorComp.vue'
+
+const showTheme = ref(false)
 
 const router = useRouter()
 const session = useSessionStore()
 const boardStore = useBoardStore()
 
 const userIsAdmin = session.isAdmin
+const userIsOwner = session.isOwner
 const showAdmin = ref(false)
 const username = session.user.usr_username
 const isOpen = ref(false)
@@ -28,13 +34,6 @@ function openCreateBoard() {
 }
 
 const showSettings = ref(false)
-
-function toggleTheme() {
-  const currentTheme = document.documentElement.getAttribute('data-theme')
-  const newTheme = currentTheme === 'dark' ? 'light' : 'dark'
-  document.documentElement.setAttribute('data-theme', newTheme)
-  localStorage.setItem('theme', newTheme)
-}
 
 function navigate(fn: () => void) {
   fn()
@@ -107,11 +106,11 @@ onMounted(() => {
 
   <!-- SIDEBAR -->
   <aside
-    class="fixed md:relative z-40 w-[280px] min-h-screen bg-bg-page border-r border-border-divider flex flex-col transition-transform duration-300"
+    class="fixed md:relative z-40 w-70 min-h-screen bg-bg-page border-r border-border-divider flex flex-col transition-transform duration-300"
     :class="isOpen ? 'translate-x-0' : '-translate-x-full md:translate-x-0'"
   >
     <!-- LOGO -->
-    <div class="h-[72px] px-6 flex items-center border-b border-border-divider flex-shrink-0">
+    <div class="h-18 px-6 flex items-center border-b border-border-divider shrink-0">
       <div class="flex items-center gap-3">
         <div
           class="w-9 h-9 rounded-xl bg-bg-accent border border-border-accent flex items-center justify-center"
@@ -140,11 +139,10 @@ onMounted(() => {
     </div>
 
     <!-- CREATE -->
-    <div class="p-4 flex-shrink-0">
+    <div class="p-4 shrink-0">
       <button
         @click="openCreateBoard"
-        class="w-full h-11 rounded-xl cursor-pointer text-sm font-medium text-white transition-all hover:opacity-90 flex items-center justify-center gap-2"
-        style="background: linear-gradient(135deg, #6366f1, #8b5cf6)"
+        class="w-full h-11 rounded-xl modal-primary cursor-pointer text-sm font-medium text-white transition-all hover:opacity-90 flex items-center justify-center gap-2"
       >
         <svg
           width="14"
@@ -162,7 +160,7 @@ onMounted(() => {
     </div>
 
     <!-- NAV -->
-    <div class="px-3 space-y-0.5 flex-shrink-0">
+    <div class="px-3 space-y-0.5 shrink-0">
       <button
         @click="navigate(goToDashBoard)"
         class="w-full flex cursor-pointer items-center gap-3 px-3 h-10 rounded-xl transition-colors text-left"
@@ -244,43 +242,58 @@ onMounted(() => {
 
       <button
         @click="showSettings = !showSettings"
-        class="w-full cursor-pointer flex items-center gap-3 px-3 h-10 rounded-xl transition-colors text-left"
+        class="w-full cursor-pointer flex items-center justify-between px-3 h-10 rounded-xl transition-colors text-left"
         :class="
           showSettings
             ? 'bg-bg-nav-active text-text-nav-active'
             : 'hover:bg-bg-nav-hover text-text-nav-inactive'
         "
       >
+        <div class="flex items-center gap-3">
+          <svg
+            width="16"
+            height="16"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          >
+            <circle cx="12" cy="12" r="3" />
+            <path
+              d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"
+            />
+          </svg>
+
+          <span class="text-sm">Settings</span>
+        </div>
+
         <svg
-          width="16"
-          height="16"
+          width="12"
+          height="12"
           viewBox="0 0 24 24"
           fill="none"
           stroke="currentColor"
-          stroke-width="2"
+          stroke-width="2.5"
           stroke-linecap="round"
-          stroke-linejoin="round"
+          class="transition-transform duration-200"
+          :style="showSettings ? 'transform: rotate(180deg)' : ''"
         >
-          <circle cx="12" cy="12" r="3" />
-          <path
-            d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"
-          />
+          <path d="M6 9l6 6 6-6" />
         </svg>
-        <span class="text-sm">Settings</span>
       </button>
 
-      <div v-if="showSettings" class="ml-8 mt-1 mb-2">
-        <button
-          @click="toggleTheme"
-          class="text-xs cursor-pointer text-text-muted hover:text-text-title transition-colors"
-        >
-          🌗 Toggle theme
-        </button>
-      </div>
+      <SettingsComp
+        v-if="showSettings"
+        @theme="showTheme = true"
+        @pushAccount="router.push('/app/profile')"
+      />
+      <ThemeSelectorComp v-if="showTheme" @close="showTheme = false" />
     </div>
 
     <!-- ADMIN DROPDOWN -->
-    <div v-if="userIsAdmin" class="mt-2 px-3 flex-shrink-0">
+    <div v-if="userIsAdmin || userIsOwner" class="mt-2 px-3 shrink-0">
       <button
         @click="showAdmin = !showAdmin"
         class="w-full cursor-pointer flex items-center justify-between px-3 h-10 rounded-xl transition-colors"
@@ -370,7 +383,7 @@ onMounted(() => {
     </div>
 
     <!-- Scrollable middle -->
-    <div class="mt-6 flex-1 overflow-y-auto px-5 space-y-6 pb-4">
+    <div class="mt-6 flex-1 overflow-y-auto px-5 space-y-6 pb-4 scrollbar-custom">
       <!-- NEW BOARDS -->
       <div>
         <p class="text-[11px] uppercase tracking-[0.2em] text-text-muted mb-2">New Boards</p>
@@ -382,7 +395,7 @@ onMounted(() => {
             class="w-full cursor-pointer flex items-center gap-3 px-3 py-2 rounded-xl hover:bg-bg-nav-hover transition-colors text-left"
           >
             <div
-              class="w-6 h-6 rounded-md bg-bg-accent border border-border-accent flex items-center justify-center text-text-accent text-[11px] font-semibold flex-shrink-0"
+              class="w-6 h-6 rounded-md bg-bg-accent border border-border-accent flex items-center justify-center text-text-accent text-[11px] font-semibold shrink-0"
             >
               {{ board.title.charAt(0).toUpperCase() }}
             </div>
@@ -402,13 +415,13 @@ onMounted(() => {
             class="w-full cursor-pointer flex items-center gap-3 px-3 py-2 rounded-xl hover:bg-bg-nav-hover transition-colors text-left"
           >
             <div
-              class="w-6 h-6 rounded-md bg-bg-avatar-favorite border border-border-avatar-favorite flex items-center justify-center text-text-avatar-favorite text-[11px] font-semibold flex-shrink-0"
+              class="w-6 h-6 rounded-md bg-bg-avatar-favorite border border-border-avatar-favorite flex items-center justify-center text-text-avatar-favorite text-[11px] font-semibold shrink-0"
             >
               {{ board.title.charAt(0).toUpperCase() }}
             </div>
             <span class="text-sm text-text-board-item truncate">{{ board.title }}</span>
             <svg
-              class="w-3 h-3 text-text-favorite-icon flex-shrink-0 ml-auto"
+              class="w-3 h-3 text-text-favorite-icon shrink-0 ml-auto"
               viewBox="0 0 24 24"
               fill="currentColor"
             >
@@ -425,12 +438,12 @@ onMounted(() => {
     </div>
 
     <!-- USER -->
-    <div class="p-4 border-t border-border-divider flex-shrink-0">
+    <div class="p-4 border-t border-border-divider shrink-0">
       <div
         class="flex items-center gap-3 px-3 py-3 rounded-xl bg-bg-user-panel border border-border-user-panel"
       >
         <div
-          class="w-8 h-8 rounded-full bg-bg-accent border border-border-accent flex items-center justify-center text-text-accent text-sm font-semibold flex-shrink-0"
+          class="w-8 h-8 rounded-full bg-bg-accent border border-border-accent flex items-center justify-center text-text-accent text-sm font-semibold shrink-0"
         >
           {{ userInitial }}
         </div>

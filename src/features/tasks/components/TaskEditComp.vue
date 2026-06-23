@@ -4,13 +4,14 @@ import type { Task, TaskEditPayload, Label } from '../data/tasksTypes'
 import api from '@/api'
 import { useSessionStore } from '@/stores/usersSessionStore'
 import dayjs from 'dayjs'
+import BaseButton from '@/components/ui/BaseButton.vue'
 
 const session = useSessionStore()
 
 const dbLabels = ref<Label[]>([])
-
 const props = defineProps<{
   task: Task
+  loading?: boolean
 }>()
 
 const emit = defineEmits<{
@@ -45,6 +46,9 @@ watch(
 
       labels: (t.labels || []).map((l) => l.id).filter((id) => id != null),
     }
+    console.log('TASK LABELS', t.labels)
+    console.log('TASK DUE DATE', t.due_date)
+    console.log('TASK LABELS RAW', JSON.parse(JSON.stringify(t.labels)))
   },
   { immediate: true },
 )
@@ -100,7 +104,7 @@ onMounted(() => {
       <div class="modal-field">
         <label class="modal-label">Due date</label>
 
-        <input v-model="localTask.due_date" type="date" class="modal-input [color-scheme:dark]" />
+        <input v-model="localTask.due_date" type="date" class="modal-input scheme-dark" />
       </div>
 
       <!-- Labels -->
@@ -131,7 +135,9 @@ onMounted(() => {
       <div class="modal-actions">
         <button @click="emit('cancel')" class="modal-cancel">Cancel</button>
 
-        <button @click="save" class="modal-primary">Save</button>
+        <BaseButton variant="primary" :loading="props.loading" @click="save">
+          Save task
+        </BaseButton>
       </div>
     </div>
   </div>
