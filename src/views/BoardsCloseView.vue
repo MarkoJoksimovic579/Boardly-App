@@ -22,11 +22,11 @@ const messageStore = useMessageStore()
 const showAddListModal = ref(false)
 
 const showEditListModal = ref(false)
-const boardId = Number(route.params.id)
+const boardId = computed(() => Number(route.params.id))
 const boardsStore = useBoardStore()
 const confirmStore = useConfirmStore()
 
-const board = computed(() => boardsStore.boardsList.find((b) => b.id === boardId))
+const board = computed(() => boardsStore.boardsList.find((b) => b.id === boardId.value))
 
 async function handleAddList(list: ListPayload) {
   try {
@@ -34,10 +34,10 @@ async function handleAddList(list: ListPayload) {
 
     await listStore.postList({
       ...list,
-      brd_id: boardId,
+      brd_id: boardId.value,
     })
 
-    await listStore.fetchLists(boardId)
+    await listStore.fetchLists(boardId.value)
 
     messageStore.success('List created successfully')
     showAddListModal.value = false
@@ -63,10 +63,10 @@ async function saveEditList(updatedList: ListPayload) {
 
     await listStore.putList({
       ...updatedList,
-      brd_id: boardId,
+      brd_id: boardId.value,
     })
 
-    await listStore.fetchLists(boardId)
+    await listStore.fetchLists(boardId.value)
 
     messageStore.success('List updated successfully')
 
@@ -94,8 +94,8 @@ async function handleDeleteList(list_id: number) {
   try {
     isListLoading.value = true
 
-    await listStore.eraseLists(boardId, list_id)
-    await listStore.fetchLists(boardId)
+    await listStore.eraseLists(boardId.value, list_id)
+    await listStore.fetchLists(boardId.value)
 
     messageStore.success('List deleted successfully')
   } catch (err) {
@@ -107,15 +107,16 @@ async function handleDeleteList(list_id: number) {
   }
 }
 function fetchLists() {
-  listStore.fetchLists(boardId)
+  listStore.fetchLists(boardId.value)
 }
 
 watch(
   () => route.params.id,
-  (newId) => {
+  async (newId) => {
     if (!newId) return
 
-    listStore.fetchLists(Number(newId))
+    listStore.allLists = []
+    await listStore.fetchLists(Number(newId))
   },
   { immediate: true },
 )
@@ -131,63 +132,77 @@ watch(
         <h1 class="text-xl font-semibold text-text-title tracking-tight">
           {{ board?.title }}
         </h1>
+
         <p class="text-text-body text-sm mt-0.5">
           {{ board?.description }}
         </p>
       </div>
 
-      <button
-        v-if="board?.can_edit"
-        @click="showAddListModal = true"
-        class="btn-primary flex items-center gap-2 px-4 h-9 rounded-xl text-sm font-medium text-white transition-all hover:opacity-90"
-      >
-        <svg
-          width="13"
-          height="13"
-          viewBox="0 0 24 24"
-          fill="none"
-          stroke="currentColor"
-          stroke-width="2.5"
-          stroke-linecap="round"
+      <div class="flex items-center gap-3">
+        <button
+          v-if="board?.can_edit"
+          @click="router.push(`/app/labels/${boardId}`)"
+          class="group h-9 px-3 rounded-xl border border-border-divider bg-bg-card text-text-body text-sm font-medium flex items-center gap-1.5 transition-all duration-200 hover:border-border-hover hover:bg-bg-subtle hover:text-text-title active:scale-95"
         >
-          <path d="M12 5v14M5 12h14" />
-        </svg>
-        Add list
-      </button>
+          <span class="text-base text-text-accent transition-transform"> 🏷️ </span>
+
+          Labels
+        </button>
+        <button
+          v-if="board?.can_edit"
+          @click="showAddListModal = true"
+          class="btn-primary flex items-center gap-2 px-4 h-9 rounded-xl text-sm font-medium text-white transition-all hover:brightness-110 active:scale-95"
+        >
+          <svg
+            width="13"
+            height="13"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2.5"
+            stroke-linecap="round"
+          >
+            <path d="M12 5v14M5 12h14" />
+          </svg>
+
+          Add list
+        </button>
+      </div>
     </div>
-    <!-- <div class="self-center text-3xl font-semibold text-text-title">Lists</div>??-->
+
     <!-- LISTS -->
     <div class="flex-1 overflow-x-auto p-8 scrollbar-custom">
-      <template v-if="listStore.allLists.length">
-        <ListOfLists
-          :lists="listStore.allLists"
-          :canEdit="board?.can_edit ?? false"
-          @open-task="openTask"
-          @delete="handleDeleteList"
-          @edit="handleEditList"
-          @fetch-tasks="fetchLists"
-        />
-      </template>
+      <div v-if="listStore.loading" class="h-full flex items-center justify-center text-text-muted">
+        Loading lists...
+      </div>
 
-      <template v-else>
-        <div class="h-full flex flex-col items-center justify-center text-center">
-          <div class="text-8xl mb-6">📋</div>
+      <ListOfLists
+        v-else-if="listStore.allLists.length"
+        :lists="listStore.allLists"
+        :canEdit="board?.can_edit ?? false"
+        @open-task="openTask"
+        @delete="handleDeleteList"
+        @edit="handleEditList"
+        @fetch-tasks="fetchLists"
+      />
 
-          <h2 class="text-3xl font-semibold text-text-title">This board is empty</h2>
+      <div v-else class="h-full flex flex-col items-center justify-center text-center">
+        <div class="text-8xl mb-6">📋</div>
 
-          <p class="mt-3 text-text-muted max-w-md">
-            Create your first list and start organizing your tasks.
-          </p>
+        <h2 class="text-3xl font-semibold text-text-title">This board is empty</h2>
 
-          <button
-            v-if="board?.can_edit"
-            @click="showAddListModal = true"
-            class="btn-primary mt-6 px-5 py-3 rounded-xl font-medium text-white transition-all hover:opacity-90"
-          >
-            Create first list
-          </button>
-        </div>
-      </template>
+        <p class="mt-3 text-text-muted max-w-md">
+          Create your first list and start organizing your tasks.
+        </p>
+
+        <button
+          v-if="board?.can_edit"
+          @click="showAddListModal = true"
+          class="btn-primary mt-6 px-5 py-3 rounded-xl font-medium text-white transition-all hover:opacity-90"
+        >
+          Create first list
+        </button>
+      </div>
     </div>
 
     <ListAddComp
@@ -196,6 +211,7 @@ watch(
       @add="handleAddList"
       @cancel="showAddListModal = false"
     />
+
     <ListEditComp
       v-if="showEditListModal && selectedList"
       :list="selectedList"

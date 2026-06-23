@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { formatDateAndTime } from '@/features/boards/data/boardsTypes'
 import type { Notification } from '@/features/notifications/data/notificationTypes'
 
 defineProps<{
@@ -48,7 +49,7 @@ const emit = defineEmits<{
             </p>
 
             <p class="text-text-muted text-xs mt-1">
-              {{ notification.created_at }}
+              {{ formatDateAndTime(notification.created_at) }}
             </p>
           </div>
         </div>

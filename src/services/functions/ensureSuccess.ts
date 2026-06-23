@@ -7,4 +7,5 @@ export function ensureSuccess(res: any) {
     }
     throw new Error(res.data?.message || 'Request failed')
   }
+  return res
 }

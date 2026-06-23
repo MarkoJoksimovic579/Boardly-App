@@ -46,9 +46,6 @@ watch(
 
       labels: (t.labels || []).map((l) => l.id).filter((id) => id != null),
     }
-    console.log('TASK LABELS', t.labels)
-    console.log('TASK DUE DATE', t.due_date)
-    console.log('TASK LABELS RAW', JSON.parse(JSON.stringify(t.labels)))
   },
   { immediate: true },
 )
@@ -57,7 +54,7 @@ async function fetchLabels() {
   if (!session.sid) return
 
   try {
-    const res = await api.getLabels(session.sid)
+    const res = await api.getLabels(props.task.brd_id)
     dbLabels.value = res.data.data
   } catch (err) {
     console.log(err)

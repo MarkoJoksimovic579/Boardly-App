@@ -115,14 +115,15 @@ watch(
     <div class="flex items-center justify-between px-4 py-3 border-b border-border-divider">
       <div class="flex items-center gap-2">
         <h2
-          class="max-w-[100px] truncate text-[13px] font-semibold text-text-title tracking-[0.01em]"
+          :title="props.list.title"
+          class="max-w-[100px] truncate text-[13px] font-semibold text-text-title tracking-[0.01em] cursor-help"
         >
           {{ props.list.title }}
         </h2>
         <span
           class="text-[10px] font-medium px-[7px] py-[2px] rounded-full bg-bg-subtle text-text-muted tracking-[0.02em]"
         >
-          {{ props.list.tasks.length }}
+          {{ localTasks.length }}
         </span>
       </div>
 

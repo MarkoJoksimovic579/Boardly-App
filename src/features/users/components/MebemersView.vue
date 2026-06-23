@@ -77,12 +77,30 @@ async function deleteMember(member_id: number, brd_id: number) {
     <div
       class="w-full max-w-md max-h-[85vh] overflow-hidden rounded-2xl border border-border-modal bg-bg-modal shadow-2xl"
     >
+      <div
+        v-if="localBoardMembers.length === 0"
+        class="flex flex-col items-center justify-center py-12"
+      >
+        <div class="text-4xl mb-2">👥</div>
+
+        <p class="text-text-muted text-sm mb-4">No members found</p>
+
+        <button
+          @click="emit('cancel')"
+          class="px-4 py-2 rounded-xl border border-border-default text-text-body hover:bg-bg-subtle transition"
+        >
+          Close
+        </button>
+      </div>
       <!-- HEADER -->
-      <div class="flex items-center justify-between px-6 py-4 border-b border-border-divider">
+      <div
+        v-else
+        class="flex items-center justify-between px-6 py-4 border-b border-border-divider"
+      >
         <div>
           <h2 class="text-xl font-semibold text-text-title">Board Members</h2>
 
-          <p class="text-sm text-text-muted mt-1">{{ members.length }} members</p>
+          <p class="text-sm text-text-muted mt-1">{{ localBoardMembers.length }} members</p>
         </div>
 
         <button @click="emit('cancel')" class="text-text-muted hover:text-text-title transition">

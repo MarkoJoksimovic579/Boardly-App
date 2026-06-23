@@ -3,72 +3,63 @@ import { defineStore } from 'pinia'
 import type { List, ListPayload, ReorderListItem } from '../data/listsTypes'
 import { useSessionStore } from '@/stores/usersSessionStore'
 import api from '@/api'
+import { ensureSuccess } from '@/services/functions/ensureSuccess'
 
 export const useListsStore = defineStore('lists', () => {
   const allLists = ref<List[]>([])
-
+  const loading = ref(false)
   const session = useSessionStore()
 
   async function fetchLists(brd_id: number) {
-    try {
-      if (!session.sid) return
-      console.log('SID:', session.sid)
-      const res = await api.getLists(brd_id, session.sid)
-      const data = res.data.data as List[]
+    if (!session.sid) throw new Error('No session')
 
-      allLists.value = data
-    } catch (err) {
-      console.log(err)
+    loading.value = true
+
+    try {
+      const res = await api.getLists(brd_id, session.sid)
+      ensureSuccess(res)
+
+      allLists.value = res.data.data as List[]
+    } finally {
+      loading.value = false
     }
   }
 
   async function eraseLists(brd_id: number, list_id: number) {
-    try {
-      if (!session.sid) return
+    if (!session.sid) throw new Error('No session')
 
-      const res = await api.deleteLists(brd_id, list_id, session.sid)
-
-      console.log(res)
-    } catch (err) {
-      console.log(err)
-    }
+    const res = await api.deleteLists(brd_id, list_id, session.sid)
+    ensureSuccess(res)
   }
 
   async function postList(list: ListPayload) {
-    try {
-      if (!session.sid) return
+    if (!session.sid) throw new Error('No session')
 
-      const res = await api.addLists(list, session.sid)
-
-      console.log(res)
-    } catch (err) {
-      console.log(err)
-    }
+    const res = await api.addLists(list, session.sid)
+    ensureSuccess(res)
   }
 
   async function putList(list: ListPayload) {
-    try {
-      if (!session.sid) return
+    if (!session.sid) throw new Error('No session')
 
-      const res = await api.editLists(list, session.sid)
-
-      console.log(res)
-    } catch (err) {
-      console.log(err)
-    }
+    const res = await api.editLists(list, session.sid)
+    ensureSuccess(res)
   }
 
   async function reorderLists(payload: { lists: ReorderListItem[] }) {
-    try {
-      if (!session.sid) return
+    if (!session.sid) throw new Error('No session')
 
-      const res = await api.reorderLists(payload, session.sid)
-
-      console.log(res)
-    } catch (err) {
-      console.log(err)
-    }
+    const res = await api.reorderLists(payload, session.sid)
+    ensureSuccess(res)
   }
 
-  return { allLists, fetchLists, postList, eraseLists, putList, reorderLists }
+  return {
+    allLists,
+    fetchLists,
+    postList,
+    eraseLists,
+    putList,
+    reorderLists,
+    loading,
+  }
 })

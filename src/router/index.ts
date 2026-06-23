@@ -11,9 +11,11 @@ import TaskViewComp from '@/features/tasks/components/TaskViewComp.vue'
 import { useSessionStore } from '@/stores/usersSessionStore'
 import DashBoardView from '@/views/DashBoardView.vue'
 import BoardsFavoritesComp from '@/features/boards/components/BoardsFavoritesComp.vue'
-import LabelView from '@/features/admin/LabelView.vue'
+
 import UsersView from '@/features/admin/UsersView.vue'
 import ProfileView from '@/views/ProfileView.vue'
+import AboutView from '@/views/AboutView.vue'
+import LabelView from '@/features/labels/components/LabelView.vue'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -37,15 +39,15 @@ const router = createRouter({
       meta: { requiresAuth: true },
       children: [
         { path: '', redirect: '/app/boards' },
-
+        { path: 'about', component: AboutView },
         { path: 'boards', component: BoardsView },
         { path: 'boards/:id', component: BoardsCloseView },
         { path: 'dashboard', component: DashBoardView },
         { path: 'profile', component: ProfileView },
+        { path: 'labels/:brd_id', component: LabelView },
         { path: 'favorites', component: BoardsFavoritesComp },
         { path: 'tasks/:id', component: TaskViewComp },
 
-        { path: 'admin/labels', component: LabelView, meta: { requiresAdmin: true } },
         { path: 'admin/users', component: UsersView, meta: { requiresAdmin: true } },
       ],
     },

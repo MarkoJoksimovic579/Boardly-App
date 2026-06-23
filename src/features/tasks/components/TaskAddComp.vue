@@ -9,6 +9,7 @@ const session = useSessionStore()
 
 const props = defineProps<{
   loading?: boolean
+  brd_id: number
 }>()
 
 const emit = defineEmits<{
@@ -29,7 +30,7 @@ const dbLabels = ref<Label[]>([])
 async function fetchLabels() {
   if (!session.sid) return
   try {
-    const res = await api.getLabels(session.sid)
+    const res = await api.getLabels(props.brd_id)
     const data = res.data.data
     dbLabels.value = data
   } catch (err) {

@@ -1,14 +1,19 @@
 <script setup lang="ts">
 import { onMounted, ref } from 'vue'
-import { type Label } from '../tasks/data/tasksTypes'
+import { type Label } from '../../tasks/data/tasksTypes.ts'
 import { useSessionStore } from '@/stores/usersSessionStore'
 
-import LabelList from '../labels/components/LabelList.vue'
-import { useLabelStore } from '../labels/stores/labelStore.ts'
-import LabelAddComp from '../labels/components/LabelAddComp.vue'
-import LabelEditComp from '../labels/components/LabelEditComp.vue'
+import { useLabelStore } from '../stores/labelStore.ts'
+
 import { useAsyncAction } from '@/services/functions/useAsyncAction.ts'
 import { useConfirmStore } from '@/stores/confirmStore.ts'
+import { useRoute } from 'vue-router'
+import LabelAddComp from './LabelAddComp.vue'
+import LabelEditComp from './LabelEditComp.vue'
+import LabelList from './LabelList.vue'
+
+const route = useRoute()
+const brdId = Number(route.params.brd_id)
 
 const session = useSessionStore()
 const labelStore = useLabelStore()
@@ -39,8 +44,8 @@ async function handleDelete(id: number) {
 
   await run(
     async () => {
-      await labelStore.eraseLabels(id)
-      await labelStore.fetchLabels()
+      await labelStore.eraseLabels(brdId, id)
+      await labelStore.fetchLabels(brdId)
     },
     {
       success: 'Label deleted successfully',
@@ -52,8 +57,8 @@ async function handleDelete(id: number) {
 async function saveEdit(updated: Label) {
   await run(
     async () => {
-      await labelStore.editLabels(updated)
-      await labelStore.fetchLabels()
+      await labelStore.editLabels(brdId, updated)
+      await labelStore.fetchLabels(brdId)
 
       showEditLabel.value = false
     },
@@ -67,8 +72,8 @@ async function saveEdit(updated: Label) {
 async function handleAddLabel(label: { name: string; color: string }) {
   await run(
     async () => {
-      await labelStore.addLabels(label)
-      await labelStore.fetchLabels()
+      await labelStore.addLabels(brdId, label)
+      await labelStore.fetchLabels(brdId)
 
       showAddLabel.value = false
     },
@@ -81,7 +86,7 @@ async function handleAddLabel(label: { name: string; color: string }) {
 
 onMounted(async () => {
   try {
-    await labelStore.fetchLabels()
+    await labelStore.fetchLabels(brdId)
   } finally {
     loading.value = false
   }

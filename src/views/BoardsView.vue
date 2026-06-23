@@ -10,6 +10,7 @@ import { useBoardUiStore } from '@/features/boards/stores/boardUiStore'
 import MebemersView from '@/features/users/components/MebemersView.vue'
 
 import MemebersAddModal from '@/features/users/components/MemebersAddModal.vue'
+import { ensureSuccess } from '@/services/functions/ensureSuccess'
 import { useAsyncAction } from '@/services/functions/useAsyncAction'
 import { useConfirmStore } from '@/stores/confirmStore'
 import { useMessageStore } from '@/stores/messageStore'
@@ -173,6 +174,34 @@ const paginatedBoards = computed(() => {
   return boardStore.filteredBoards.slice(start, end)
 })
 
+async function leaveBoard(brd_id: number) {
+  if (!session.sid || !session.user) return
+
+  const confirmed = await confirmStore.ask({
+    title: 'Leave board',
+    message: 'Are you sure you want to leave this board?',
+    confirmText: 'Leave',
+    cancelText: 'Cancel',
+    variant: 'danger',
+  })
+
+  if (!confirmed) return
+
+  await run(
+    async () => {
+      if (!session.sid) return
+      const res = await api.deleteMembers(brd_id, session.usr_id, session.sid)
+
+      ensureSuccess(res)
+      boardStore.fetchBoards()
+    },
+    {
+      success: 'You left the board',
+      error: 'Failed to leave the board',
+    },
+  )
+}
+
 watch(
   () => totalPages.value,
   (newTotal) => {
@@ -212,6 +241,7 @@ onMounted(() => boardStore.fetchBoards())
           @toggle-favorite="toggleFavorites"
           @add-members="handleAddMembers"
           @show-members="handleShowMembers"
+          @leave-board="leaveBoard"
         />
       </div>
     </div>

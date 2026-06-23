@@ -5,7 +5,6 @@ import { computed, onMounted, ref } from 'vue'
 import { useRouter } from 'vue-router'
 import { useBoardUiStore } from '@/features/boards/stores/boardUiStore.ts'
 import SettingsComp from './SettingsComp.vue'
-
 import ThemeSelectorComp from './ThemeSelectorComp.vue'
 
 const showTheme = ref(false)
@@ -39,7 +38,9 @@ function navigate(fn: () => void) {
   fn()
   isOpen.value = false
 }
-
+function goToAbout() {
+  router.push('/app/about')
+}
 function goToBoards() {
   router.push('/app/boards')
 }
@@ -52,9 +53,7 @@ function goToDashBoard() {
 function goToBoard(id: number) {
   router.push(`/app/boards/${id}`)
 }
-function goToLabels() {
-  router.push('/app/admin/labels')
-}
+
 function goToUsers() {
   router.push('/app/admin/users')
 }
@@ -208,7 +207,7 @@ onMounted(() => {
           stroke-linejoin="round"
         >
           <path
-            d="M9 3H5a2 2 0 0 0-2 2v4m6-6h10a2 2 0 0 1 2 2v4M9 3v18m0 0h10a2 2 0 0 0 2-2v-4M9 21H5a2 2 0 0 1-2-2v-4m0 0h18"
+            d="M9 3H5a2 2 0 0 0-2 2v4m6-6h10a2 2 0 0 1 2 2v4M9 3v18m0 0h10a2 2 0 0 0 2-2v-4M9 21H5a2 2 0 1 1-2-2v-4m0 0h18"
           />
         </svg>
         <span class="text-sm">All boards</span>
@@ -265,7 +264,6 @@ onMounted(() => {
               d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"
             />
           </svg>
-
           <span class="text-sm">Settings</span>
         </div>
 
@@ -289,6 +287,28 @@ onMounted(() => {
         @theme="showTheme = true"
         @pushAccount="router.push('/app/profile')"
       />
+
+      <button
+        @click="goToAbout"
+        class="w-full cursor-pointer flex items-center gap-3 px-3 h-10 rounded-xl hover:bg-bg-nav-hover transition-colors text-left text-text-nav-inactive"
+      >
+        <svg
+          width="15"
+          height="15"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+        >
+          <circle cx="12" cy="12" r="10" />
+          <line x1="12" y1="8" x2="12" y2="12" />
+          <line x1="12" y1="16" x2="12.01" y2="16" />
+        </svg>
+        <span class="text-sm">About</span>
+      </button>
+
       <ThemeSelectorComp v-if="showTheme" @close="showTheme = false" />
     </div>
 
@@ -335,51 +355,28 @@ onMounted(() => {
         </svg>
       </button>
 
-      <div v-if="showAdmin" class="mt-0.5 space-y-0.5 pl-2">
-        <button
-          @click="navigate(goToLabels)"
-          class="w-full cursor-pointer flex items-center gap-3 px-3 h-10 rounded-xl hover:bg-bg-nav-hover transition-colors text-left text-text-nav-inactive"
+      <button
+        v-if="showAdmin"
+        @click="navigate(goToUsers)"
+        class="w-full cursor-pointer flex items-center gap-3 px-3 h-10 rounded-xl hover:bg-bg-nav-hover transition-colors text-left text-text-nav-inactive"
+      >
+        <svg
+          width="15"
+          height="15"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+          stroke-linecap="round"
+          stroke-linejoin="round"
         >
-          <svg
-            width="15"
-            height="15"
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="currentColor"
-            stroke-width="2"
-            stroke-linecap="round"
-            stroke-linejoin="round"
-          >
-            <path
-              d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"
-            />
-            <line x1="7" y1="7" x2="7.01" y2="7" />
-          </svg>
-          <span class="text-sm">Labels</span>
-        </button>
-
-        <button
-          @click="navigate(goToUsers)"
-          class="w-full cursor-pointer flex items-center gap-3 px-3 h-10 rounded-xl hover:bg-bg-nav-hover transition-colors text-left text-text-nav-inactive"
-        >
-          <svg
-            width="15"
-            height="15"
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="currentColor"
-            stroke-width="2"
-            stroke-linecap="round"
-            stroke-linejoin="round"
-          >
-            <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" />
-            <circle cx="9" cy="7" r="4" />
-            <path d="M23 21v-2a4 4 0 0 0-3-3.87" />
-            <path d="M16 3.13a4 4 0 0 1 0 7.75" />
-          </svg>
-          <span class="text-sm">Users</span>
-        </button>
-      </div>
+          <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" />
+          <circle cx="9" cy="7" r="4" />
+          <path d="M23 21v-2a4 4 0 0 0-3-3.87" />
+          <path d="M16 3.13a4 4 0 0 1 0 7.75" />
+        </svg>
+        <span class="text-sm">Users</span>
+      </button>
     </div>
 
     <!-- Scrollable middle -->

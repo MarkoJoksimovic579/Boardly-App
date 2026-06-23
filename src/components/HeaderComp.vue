@@ -1,11 +1,10 @@
 <script setup lang="ts">
 import { useBoardStore } from '@/features/boards/stores/boardsStore.ts'
+import NotificationsComp from '@/features/notifications/components/NotificationsComp.vue'
 import { useNotificationsStore } from '@/features/notifications/stores/notificationsStore'
 import { useSessionStore } from '@/stores/usersSessionStore'
 import { computed, onMounted, ref, watch } from 'vue'
 import { useRouter, useRoute } from 'vue-router'
-
-import NotificationsComp from './NotificationsComp.vue'
 
 const router = useRouter()
 const route = useRoute()

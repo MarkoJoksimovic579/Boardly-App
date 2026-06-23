@@ -78,13 +78,12 @@ export default {
     axios.delete('comments', { params: { com_id, sid } }),
 
   //labels
-  getLabels: (sid: string) => axios.get('labels', { params: { sid } }),
-  postLabels: (name: string, color: string, sid: string) =>
-    axios.post('admin/labels', { name, color }, { params: { sid } }),
-  putLabels: (id: number, name: string, color: string, sid: string) =>
-    axios.put('admin/labels', { id, name, color }, { params: { sid } }),
-
-  deleteLabels: (id: number, sid: string) => axios.delete('admin/labels', { params: { id, sid } }),
+  getLabels: (brd_id: number) => axios.get('labels', { params: { brd_id } }),
+  postLabels: (brd_id: number, name: string, color: string) =>
+    axios.post('labels', { brd_id, name, color }),
+  putLabels: (brd_id: number, id: number, name: string, color: string) =>
+    axios.put('labels', { brd_id, id, name, color }),
+  deleteLabels: (brd_id: number, id: number) => axios.delete('labels', { params: { brd_id, id } }),
 
   //ADMIN
   getUsers: (sid: string) => axios.get('admin/users', { params: { sid } }),

@@ -13,6 +13,7 @@ const emit = defineEmits<{
   (e: 'toggle-favorite', id: number): void
   (e: 'addMembers', id: number): void
   (e: 'showMembers', board: Board): void
+  (e: 'leave-board', id: number): void
 }>()
 
 function onEdit() {
@@ -189,6 +190,30 @@ function formatDate(date: string) {
           <line x1="22" y1="11" x2="16" y2="11" />
         </svg>
         Add members
+      </button>
+    </div>
+    <div v-else class="mt-3 flex justify-end">
+      <button
+        class="flex items-center gap-1.5 text-[11px] font-medium px-2.5 py-1.5 rounded-lg text-text-danger/70 hover:bg-bg-danger-hover hover:text-text-danger transition-all duration-150"
+        title="Leave board"
+        @click.stop="emit('leave-board', board.id)"
+      >
+        <svg
+          width="12"
+          height="12"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+        >
+          <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4" />
+          <polyline points="16 17 21 12 16 7" />
+          <line x1="21" y1="12" x2="9" y2="12" />
+        </svg>
+
+        Leave board
       </button>
     </div>
   </div>

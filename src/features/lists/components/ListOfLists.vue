@@ -110,10 +110,10 @@ async function onListMove() {
 async function handleTaskReorder(payload: DragTaskPayload[]) {
   try {
     await taskStore.moveTask(payload)
-    emit('fetchTasks')
   } catch (err) {
     console.log(err)
     messageStore.fail('Failed to reorder tasks')
+    emit('fetchTasks')
   }
 }
 
@@ -151,7 +151,8 @@ watch(
   </draggable>
 
   <TaskAddComp
-    v-if="showAddTaskModal"
+    v-if="showAddTaskModal && selectedBoardId"
+    :brd_id="selectedBoardId"
     :loading="isTaskLoading"
     @save="saveAdd"
     @cancel="showAddTaskModal = false"

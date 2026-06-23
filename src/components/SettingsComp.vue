@@ -2,6 +2,7 @@
 const emit = defineEmits<{
   (e: 'theme'): void
   (e: 'pushAccount'): void
+  (e: 'pushAbout'): void
 }>()
 </script>
 
@@ -29,8 +30,8 @@ const emit = defineEmits<{
     </button>
 
     <button
-      class="w-full cursor-pointer flex items-center gap-3 px-3 h-10 rounded-xl hover:bg-bg-nav-hover transition-colors text-left text-text-nav-inactive"
       @click="emit('pushAccount')"
+      class="w-full cursor-pointer flex items-center gap-3 px-3 h-10 rounded-xl hover:bg-bg-nav-hover transition-colors text-left text-text-nav-inactive"
     >
       <svg
         width="15"
@@ -46,26 +47,6 @@ const emit = defineEmits<{
         <circle cx="12" cy="7" r="4" />
       </svg>
       <span class="text-sm">Account</span>
-    </button>
-
-    <button
-      class="w-full cursor-pointer flex items-center gap-3 px-3 h-10 rounded-xl hover:bg-bg-nav-hover transition-colors text-left text-text-nav-inactive"
-    >
-      <svg
-        width="15"
-        height="15"
-        viewBox="0 0 24 24"
-        fill="none"
-        stroke="currentColor"
-        stroke-width="2"
-        stroke-linecap="round"
-        stroke-linejoin="round"
-      >
-        <circle cx="12" cy="12" r="10" />
-        <line x1="12" y1="8" x2="12" y2="12" />
-        <line x1="12" y1="16" x2="12.01" y2="16" />
-      </svg>
-      <span class="text-sm">About</span>
     </button>
   </div>
 </template>
