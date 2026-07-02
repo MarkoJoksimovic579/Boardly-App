@@ -169,7 +169,7 @@ onMounted(() => {
               :class="
                 board.can_edit
                   ? 'bg-bg-accent border border-border-accent text-text-accent'
-                  : 'bg-bg-subtle border border-border-default text-text-muted'
+                  : 'bg-bg-accent border border-border-accent text-text-accent'
               "
             >
               {{ board.can_edit ? 'admin' : 'member' }}

@@ -19,7 +19,7 @@ const formattedDate = (dateStr: string) => dayjs(dateStr).format('D. MMM YYYY. H
   <div class="flex gap-3 py-3.5 border-b border-border-divider last:border-none">
     <!-- Avatar -->
     <div
-      class="w-8 h-8 min-w-[32px] rounded-full bg-bg-accent text-text-accent flex items-center justify-center text-xs font-medium"
+      class="w-8 h-8 min-w-8 rounded-full bg-bg-accent text-text-accent flex items-center justify-center text-xs font-medium"
     >
       {{ initials(props.comment.username) }}
     </div>

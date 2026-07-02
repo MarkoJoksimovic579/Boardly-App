@@ -112,33 +112,97 @@ watch(
     "
   >
     <!-- HEADER -->
-    <div class="flex items-center justify-between px-4 py-3 border-b border-border-divider">
-      <div class="flex items-center gap-2">
-        <h2
-          :title="props.list.title"
-          class="max-w-[100px] truncate text-[13px] font-semibold text-text-title tracking-[0.01em] cursor-help"
-        >
-          {{ props.list.title }}
-        </h2>
-        <span
-          class="text-[10px] font-medium px-[7px] py-[2px] rounded-full bg-bg-subtle text-text-muted tracking-[0.02em]"
-        >
-          {{ localTasks.length }}
-        </span>
+    <div class="border-b border-border-divider">
+      <!-- Red 1: naslov + dugmići -->
+      <div class="flex items-center justify-between px-4 pt-3 pb-2">
+        <div class="flex items-center gap-2 min-w-0">
+          <h2
+            :title="props.list.title"
+            class="truncate text-[13px] font-semibold text-text-title tracking-[0.01em] cursor-help"
+          >
+            {{ props.list.title }}
+          </h2>
+          <span
+            class="shrink-0 text-[10px] font-medium px-[7px] py-[2px] rounded-full bg-bg-subtle text-text-muted tracking-[0.02em]"
+          >
+            {{ localTasks.length }}
+          </span>
+        </div>
+
+        <div v-if="props.canEdit" class="flex gap-1 shrink-0 ml-2">
+          <button
+            class="w-7 h-7 rounded-lg flex items-center justify-center text-text-muted hover:bg-bg-subtle hover:text-text-title transition-all duration-150"
+            title="Edit"
+            @click="onEdit"
+          >
+            <svg
+              width="14"
+              height="14"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            >
+              <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7" />
+              <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z" />
+            </svg>
+          </button>
+
+          <button
+            class="w-7 h-7 rounded-lg flex items-center justify-center text-text-danger hover:bg-bg-danger-hover transition-all duration-150"
+            title="Delete"
+            @click="emit('delete', props.list.id)"
+          >
+            <svg
+              width="14"
+              height="14"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            >
+              <polyline points="3 6 5 6 21 6" />
+              <path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6" />
+              <path d="M10 11v6" />
+              <path d="M14 11v6" />
+              <path d="M9 6V4h6v2" />
+            </svg>
+          </button>
+
+          <button
+            type="button"
+            class="list-drag-handle w-7 h-7 rounded-lg flex items-center justify-center text-text-muted hover:bg-bg-subtle hover:text-text-title cursor-grab active:cursor-grabbing transition-all duration-150"
+            title="Drag to reorder"
+            @click.stop
+          >
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor">
+              <circle cx="9" cy="6" r="1.5" />
+              <circle cx="15" cy="6" r="1.5" />
+              <circle cx="9" cy="12" r="1.5" />
+              <circle cx="15" cy="12" r="1.5" />
+              <circle cx="9" cy="18" r="1.5" />
+              <circle cx="15" cy="18" r="1.5" />
+            </svg>
+          </button>
+        </div>
       </div>
 
-      <div class="hidden md:flex flex-1 p-1 justify-center">
+      <!-- Red 2: search -->
+      <div class="px-3 pb-3">
         <div class="relative">
           <input
             v-model="titleSearch"
             placeholder="Search tasks..."
-            class="w-full h-7 pl-7 pr-4 rounded-xl bg-bg-input border border-border-default text-text-body text-sm outline-none focus:border-border-accent"
+            class="w-full h-7 pl-7 pr-3 rounded-xl bg-bg-input border border-border-default text-text-body text-sm outline-none focus:border-border-accent"
           />
-
           <svg
-            class="absolute left-3 top-1/2 -translate-y-1/2 text-text-muted"
-            width="15"
-            height="15"
+            class="absolute left-2.5 top-1/2 -translate-y-1/2 text-text-muted"
+            width="13"
+            height="13"
             viewBox="0 0 24 24"
             fill="none"
             stroke="currentColor"
@@ -150,51 +214,6 @@ watch(
             <path d="m21 21-4.35-4.35" />
           </svg>
         </div>
-      </div>
-
-      <!-- Action buttons -->
-      <div v-if="props.canEdit" class="flex gap-1">
-        <button
-          class="w-7 h-7 rounded-lg flex items-center justify-center text-text-muted hover:bg-bg-subtle hover:text-text-title transition-all duration-150"
-          title="Edit"
-          @click="onEdit"
-        >
-          <svg
-            width="14"
-            height="14"
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="currentColor"
-            stroke-width="2"
-            stroke-linecap="round"
-            stroke-linejoin="round"
-          >
-            <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7" />
-            <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z" />
-          </svg>
-        </button>
-        <button
-          class="w-7 h-7 rounded-lg flex items-center justify-center text-text-danger hover:bg-bg-danger-hover transition-all duration-150"
-          title="Delete"
-          @click="emit('delete', props.list.id)"
-        >
-          <svg
-            width="14"
-            height="14"
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="currentColor"
-            stroke-width="2"
-            stroke-linecap="round"
-            stroke-linejoin="round"
-          >
-            <polyline points="3 6 5 6 21 6" />
-            <path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6" />
-            <path d="M10 11v6" />
-            <path d="M14 11v6" />
-            <path d="M9 6V4h6v2" />
-          </svg>
-        </button>
       </div>
     </div>
 
@@ -209,6 +228,15 @@ watch(
         class="flex flex-col gap-1.5"
         ghost-class="opacity-0"
         :animation="200"
+        :delay="180"
+        :delay-on-touch-only="true"
+        :touch-start-threshold="5"
+        handle=".task-drag-handle"
+        :force-fallback="true"
+        :scroll="true"
+        :scroll-sensitivity="80"
+        :scroll-speed="12"
+        :bubble-scroll="true"
         @change="onTaskChange"
         @start="isDraggingTask = true"
         @end="isDraggingTask = false"
@@ -224,7 +252,6 @@ watch(
             />
           </div>
         </template>
-        <!-- Ovo se prikazuje samo kad je lista prazna -->
         <template #footer>
           <div
             v-if="localTasks.length === 0 && isDraggingTask"
@@ -235,6 +262,7 @@ watch(
           </div>
         </template>
       </draggable>
+
       <div
         v-if="props.list.tasks.length === 0"
         class="text-xs text-text-muted text-center py-7 tracking-[0.01em]"

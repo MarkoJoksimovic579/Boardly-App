@@ -125,4 +125,7 @@ export default {
     }),
   putNotificationsRead: () => axios.put('notifications'),
   deleteNotifications: () => axios.delete('notifications'),
+
+  //playboard test
+  getPlayBoards: () => axios.get('/vezba/vezba3'),
 }

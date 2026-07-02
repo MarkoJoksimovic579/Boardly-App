@@ -43,9 +43,9 @@ const selectedListId = ref<number | null>(null)
 const selectedBoardId = ref<number | null>(null)
 const showAddTaskModal = ref(false)
 
-function openAddTask(listId: number, brdId: number) {
-  selectedListId.value = listId
-  selectedBoardId.value = brdId
+function openAddTask(listId: number, brdId: number | string) {
+  selectedListId.value = Number(listId)
+  selectedBoardId.value = Number(brdId)
   showAddTaskModal.value = true
 }
 
@@ -84,7 +84,11 @@ async function handleDelete(payload: TaskDeletePayload) {
   await run(
     async () => {
       await taskStore.eraseTask(payload)
-      emit('fetchTasks')
+
+      localLists.value = localLists.value.map((list) => ({
+        ...list,
+        tasks: list.tasks.filter((task) => task.id !== payload.tsk_id),
+      }))
     },
     {
       success: 'Task deleted successfully',
@@ -134,6 +138,15 @@ watch(
     ghost-class="opacity-0"
     :animation="200"
     :disabled="!props.canEdit"
+    :delay="180"
+    :delay-on-touch-only="true"
+    :touch-start-threshold="5"
+    handle=".list-drag-handle"
+    :force-fallback="true"
+    :scroll="true"
+    :scroll-sensitivity="80"
+    :scroll-speed="12"
+    :bubble-scroll="true"
     @change="onListMove"
   >
     <template #item="{ element: list }">

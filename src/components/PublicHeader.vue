@@ -6,7 +6,7 @@ import { RouterView } from 'vue-router'
   <div class="min-h-screen bg-[#0a0a0a]">
     <!-- PUBLIC HEADER -->
     <header
-      class="h-[68px] border-b border-white/[0.06] flex items-center justify-between px-8 xl:px-16"
+      class="h-17 border-b border-white/6 flex items-center justify-between px-8 xl:px-16"
     >
       <!-- Logo -->
       <RouterLink to="/" class="flex items-center gap-2.5 no-underline">
@@ -36,7 +36,7 @@ import { RouterView } from 'vue-router'
       <div class="flex items-center gap-2">
         <RouterLink
           to="/login"
-          class="h-9 px-4 rounded-xl text-sm text-white/50 hover:text-white/80 hover:bg-white/[0.04] transition-all no-underline flex items-center"
+          class="h-9 px-4 rounded-xl text-sm text-white/50 hover:text-white/80 hover:bg-white/4 transition-all no-underline flex items-center"
         >
           Sign in
         </RouterLink>

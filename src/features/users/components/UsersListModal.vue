@@ -54,9 +54,9 @@ onMounted(() => userStore.fetchUsers())
             <th class="hidden md:table-cell px-5 py-4 w-[30%]">Full Name</th>
             <th class="hidden md:table-cell px-5 py-4 w-[20%]">Username</th>
             <th class="hidden md:table-cell px-5 py-4 w-[35%]">Email</th>
-            <th class="px-5 py-3 text-left">Roles</th>
+            <th class="hidden md:table-cell px-5 py-3 text-left">Roles</th>
             <th class="hidden md:table-cell px-5 py-4 w-[15%] text-right">Actions</th>
-            <th class="md:hidden px-4 py-4">Users</th>
+            <th class="hidden md:table-cell px-4 py-4">Users</th>
           </tr>
         </thead>
 

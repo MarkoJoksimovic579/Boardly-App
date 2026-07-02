@@ -54,3 +54,29 @@ export type DragTaskPayload = {
   list_id: number
   brd_id: number
 }
+export type Telefon = {
+  tel_id: number
+  tel_name: string
+}
+export const telList: Telefon[] = [
+  {
+    tel_id: 1,
+    tel_name: 'iPhone 16 Pro',
+  },
+  {
+    tel_id: 2,
+    tel_name: 'Samsung Galaxy S25 Ultra',
+  },
+  {
+    tel_id: 3,
+    tel_name: 'Google Pixel 10',
+  },
+  {
+    tel_id: 4,
+    tel_name: 'Xiaomi 15',
+  },
+  {
+    tel_id: 5,
+    tel_name: 'OnePlus 13',
+  },
+]

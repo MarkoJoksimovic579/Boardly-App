@@ -7,7 +7,7 @@ const confirmStore = useConfirmStore()
 <template>
   <div
     v-if="confirmStore.isOpen"
-    class="fixed inset-0 z-[999] bg-black/70 backdrop-blur-sm flex items-center justify-center p-6"
+    class="fixed inset-0 z-999 bg-black/70 backdrop-blur-sm flex items-center justify-center p-6"
   >
     <div class="w-full max-w-md rounded-2xl border border-border-default bg-bg-card p-6 shadow-2xl">
       <h2 class="text-lg font-semibold text-text-title mb-2">

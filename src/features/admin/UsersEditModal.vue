@@ -67,7 +67,7 @@ function save() {
 
 <template>
   <div class="modal-overlay" @click.self="emit('cancel')">
-    <div class="modal-container max-w-[500px] w-full">
+    <div class="modal-container max-w-125 w-full">
       <!-- HEADER -->
       <div class="modal-header">
         <h2 class="modal-title">Edit User</h2>

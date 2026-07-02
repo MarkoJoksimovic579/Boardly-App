@@ -73,7 +73,7 @@ async function save() {
       <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-5">
         <div class="flex items-center gap-4 md:gap-5">
           <div
-            class="w-16 h-16 rounded-full bg-bg-accent border-2 border-bg-default flex items-center justify-center text-2xl font-medium text-text-accent shrink-0"
+            class="w-16 h-16 rounded-full bg-bg-accent border-2 border-border-default flex items-center justify-center text-2xl font-medium text-text-accent shrink-0"
           >
             {{ user?.usr_fullname?.charAt(0).toUpperCase() }}
           </div>
@@ -101,7 +101,7 @@ async function save() {
           <template v-if="!isEditing">
             <button
               @click="startEdit"
-              class="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-lg border border-border-default text-text-title text-sm font-medium hover:bg-bg-secondary transition"
+              class="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-lg border border-border-default text-text-title text-sm font-medium hover:bg-bg-subtle transition"
             >
               Edit
             </button>
@@ -111,7 +111,7 @@ async function save() {
             <button
               @click="cancel"
               :disabled="isSaving"
-              class="inline-flex items-center px-3.5 py-2 rounded-lg border border-border-default text-text-muted text-sm font-medium hover:bg-bg-secondary transition disabled:opacity-40"
+              class="inline-flex items-center px-3.5 py-2 rounded-lg border border-border-default text-text-muted text-sm font-medium hover:bg-bg-subtle transition disabled:opacity-40"
             >
               Cancel
             </button>
@@ -127,7 +127,7 @@ async function save() {
 
           <button
             @click="session.logout()"
-            class="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-lg border border-border-danger text-text-danger text-sm font-medium hover:bg-bg-danger-hover transition"
+            class="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-lg border border-border-default text-text-danger text-sm font-medium hover:bg-bg-danger-hover transition"
           >
             Log out
           </button>
@@ -136,22 +136,25 @@ async function save() {
 
       <!-- Stat cards -->
       <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
-        <div class="bg-bg-secondary rounded-lg p-4 flex flex-col gap-1">
+        <div class="bg-bg-subtle rounded-lg p-4 flex flex-col gap-1">
           <span class="text-xs text-text-muted">Status</span>
           <span class="text-sm md:text-base font-medium text-text-title flex items-center gap-1.5">
-            <span class="w-2 h-2 rounded-full bg-green-500 inline-block"></span>
+            <span
+              class="w-2 h-2 rounded-full bg-green-500 inline-block"
+              style="box-shadow: 0 0 6px 1px rgba(34, 197, 94, 0.6)"
+            ></span>
             Active
           </span>
         </div>
 
-        <div class="bg-bg-secondary rounded-lg p-4 flex flex-col gap-1">
+        <div class="bg-bg-subtle rounded-lg p-4 flex flex-col gap-1">
           <span class="text-xs text-text-muted">Username</span>
           <span class="text-sm font-medium text-text-title font-mono truncate">
             {{ user?.usr_username }}
           </span>
         </div>
 
-        <div class="bg-bg-secondary rounded-lg p-4 flex flex-col gap-1">
+        <div class="bg-bg-subtle rounded-lg p-4 flex flex-col gap-1">
           <span class="text-xs text-text-muted">Roles count</span>
           <span class="text-sm md:text-base font-medium text-text-title">
             {{ user?.roles?.length ?? 0 }}
@@ -170,7 +173,7 @@ async function save() {
 
           <span
             v-if="isEditing"
-            class="text-xs text-text-muted bg-bg-secondary px-2.5 py-1 rounded-full border border-border-default"
+            class="text-xs text-text-muted bg-bg-subtle px-2.5 py-1 rounded-full border border-border-default"
           >
             Editing
           </span>
@@ -184,7 +187,7 @@ async function save() {
           <input
             v-if="isEditing && editUser"
             v-model="editUser.usr_fullname"
-            class="w-full sm:w-64 text-sm font-medium text-text-title bg-bg-secondary border border-border-default rounded-lg px-3 py-2 outline-none focus:border-border-accent"
+            class="w-full sm:w-64 text-sm font-medium text-text-title bg-bg-subtle border border-border-default rounded-lg px-3 py-2 outline-none focus:border-border-accent"
           />
 
           <span v-else class="text-sm font-medium text-text-title">
@@ -200,7 +203,7 @@ async function save() {
           <input
             v-if="isEditing && editUser"
             v-model="editUser.usr_username"
-            class="w-full sm:w-64 text-sm font-medium text-text-title bg-bg-secondary border border-border-default rounded-lg px-3 py-2 font-mono outline-none focus:border-border-accent"
+            class="w-full sm:w-64 text-sm font-medium text-text-title bg-bg-subtle border border-border-default rounded-lg px-3 py-2 font-mono outline-none focus:border-border-accent"
           />
 
           <span v-else class="text-sm font-medium text-text-title font-mono">
@@ -217,7 +220,7 @@ async function save() {
             v-if="isEditing && editUser"
             v-model="editUser.usr_email"
             type="email"
-            class="w-full sm:w-64 text-sm font-medium text-text-title bg-bg-secondary border border-border-default rounded-lg px-3 py-2 font-mono outline-none focus:border-border-accent"
+            class="w-full sm:w-64 text-sm font-medium text-text-title bg-bg-subtle border border-border-default rounded-lg px-3 py-2 font-mono outline-none focus:border-border-accent"
           />
 
           <span v-else class="text-sm font-medium text-text-title font-mono break-all">

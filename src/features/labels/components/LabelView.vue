@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { onMounted, ref } from 'vue'
+import { computed, onMounted, ref } from 'vue'
 import { type Label } from '../../tasks/data/tasksTypes.ts'
 import { useSessionStore } from '@/stores/usersSessionStore'
 
@@ -11,6 +11,7 @@ import { useRoute } from 'vue-router'
 import LabelAddComp from './LabelAddComp.vue'
 import LabelEditComp from './LabelEditComp.vue'
 import LabelList from './LabelList.vue'
+import { useBoardStore } from '@/features/boards/stores/boardsStore.ts'
 
 const route = useRoute()
 const brdId = Number(route.params.brd_id)
@@ -18,7 +19,7 @@ const brdId = Number(route.params.brd_id)
 const session = useSessionStore()
 const labelStore = useLabelStore()
 const confirmStore = useConfirmStore()
-
+const boardStore = useBoardStore()
 const showAddLabel = ref(false)
 const showEditLabel = ref(false)
 const loading = ref(true)
@@ -84,8 +85,18 @@ async function handleAddLabel(label: { name: string; color: string }) {
   )
 }
 
+const selectedBoard = computed(() => boardStore.boardsList.find((board) => board.id === brdId))
+
 onMounted(async () => {
   try {
+    if (!boardStore.boardsList.length) {
+      await boardStore.fetchBoards()
+    }
+
+    console.log('boardsList:', boardStore.boardsList)
+    console.log('brdId:', brdId)
+    console.log('selectedBoard:', selectedBoard.value)
+
     await labelStore.fetchLabels(brdId)
   } finally {
     loading.value = false
@@ -94,7 +105,10 @@ onMounted(async () => {
 </script>
 
 <template>
-  <div v-if="session.isAdmin || session.isOwner" class="min-h-screen p-8 space-y-8">
+  <div
+    v-if="session.isAdmin || session.isOwner || selectedBoard?.can_edit"
+    class="min-h-screen p-8 space-y-8"
+  >
     <!-- HEADER -->
     <div class="flex items-start justify-between">
       <div>

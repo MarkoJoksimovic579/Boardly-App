@@ -76,7 +76,7 @@ async function handleSaveEdit(updatedUser: User) {
 </script>
 
 <template>
-  <div class="min-h-screen p-8 space-y-8">
+  <div class="min-h-screen p-8 space-y-8Only owner can edit own">
     <input
       type="text"
       name="fake_username"
@@ -90,23 +90,20 @@ async function handleSaveEdit(updatedUser: User) {
       autocomplete="new-password"
       style="position: absolute; left: -9999px; height: 0; width: 0"
     />
+
     <!-- HEADER -->
     <div class="flex items-start justify-between">
       <div>
-        <p class="text-[11px] uppercase tracking-[0.25em] text-white/25 mb-2 font-medium">
+        <p class="text-[11px] uppercase tracking-[0.25em] text-text-muted mb-2 font-medium">
           Admin Panel
         </p>
-        <h1 class="text-3xl font-semibold text-white tracking-tight">Users</h1>
-        <p class="text-white/35 text-sm mt-1.5">Manage user accounts and permissions</p>
+        <h1 class="text-3xl font-semibold text-text-title tracking-tight">Users</h1>
+        <p class="text-text-body text-sm mt-1.5">Manage user accounts and permissions</p>
       </div>
 
       <button
         @click="showAddUserModal = true"
-        class="flex cursor-pointer items-center gap-2 h-10 px-4 rounded-xl text-sm font-medium text-white transition-all duration-200 hover:brightness-110 active:scale-95"
-        style="
-          background: linear-gradient(135deg, #6366f1, #8b5cf6);
-          box-shadow: 0 0 20px rgba(99, 102, 241, 0.3);
-        "
+        class="base-button base-button-primary mt-0 h-10 px-4"
       >
         <span class="text-lg leading-none">+</span>
         New User
@@ -117,7 +114,7 @@ async function handleSaveEdit(updatedUser: User) {
     <div class="flex items-center gap-3">
       <div class="relative flex-1 max-w-sm">
         <svg
-          class="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-white/25 pointer-events-none"
+          class="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-text-muted pointer-events-none"
           fill="none"
           stroke="currentColor"
           stroke-width="2"
@@ -137,17 +134,21 @@ async function handleSaveEdit(updatedUser: User) {
         <button
           v-if="userStore.nameSearch"
           @click="userStore.nameSearch = ''"
-          class="absolute right-3 top-1/2 -translate-y-1/2 text-white/25 hover:text-white/60 transition-colors text-lg leading-none"
+          class="absolute right-3 top-1/2 -translate-y-1/2 text-text-muted hover:text-text-title transition-colors text-lg leading-none"
         >
           ×
         </button>
       </div>
 
       <div
-        class="rounded-xl border border-white/[0.06] bg-white/[0.03] px-4 h-10 flex items-center gap-2.5 shrink-0"
+        class="rounded-xl border border-border-default bg-bg-subtle px-4 h-10 flex items-center gap-2.5 shrink-0"
       >
-        <span class="text-white/25 text-[10px] uppercase tracking-[0.2em] font-medium">Total</span>
-        <span class="text-white font-semibold tabular-nums">{{ userStore.usersList.length }}</span>
+        <span class="text-text-muted text-[10px] uppercase tracking-[0.2em] font-medium"
+          >Total</span
+        >
+        <span class="text-text-title font-semibold tabular-nums">{{
+          userStore.usersList.length
+        }}</span>
       </div>
     </div>
 

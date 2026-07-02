@@ -8,7 +8,7 @@ const messageStore = useMessageStore()
   <Transition name="toast">
     <div
       v-if="messageStore.visible"
-      class="fixed top-5 right-5 z-[9999] rounded-xl px-5 py-3 shadow-xl text-sm font-medium"
+      class="fixed top-5 right-5 z-9999 rounded-xl px-5 py-3 shadow-xl text-sm font-medium"
       :class="messageStore.type === 'success' ? 'bg-green-500 text-white' : 'bg-red-500 text-white'"
     >
       {{ messageStore.text }}
